@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function validateEdit(){
+            let name = document.getElementById("name").value;
+            let service = document.getElementById("service").value;
+            let date = document.getElementById("date").value;
+
+            if (name.trim() === "" || service.trim() === "" || date.trim() === "") {
+                alert("Te mbushen te gjitha hapsirat!");
+                return false;
+            }
+
+            if (name.length > 3){
+                alert("Emri duhet te kete me shum se 3 karaktere!");
+                return false;
+            }
+
+            alert("Editimi u krye me sukses!");
+            return false;
+        }
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
