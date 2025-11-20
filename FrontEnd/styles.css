@@ -13,15 +13,19 @@
    margin-left: 35%;
 }
 .mainMenu{
-    display: flex;
-    margin-left: 20%;
+    display: flex;  
+    justify-content: space-around;
+    font-size: 120%;
 
+}
+#homeindex{
+    padding-left: 5%;
+    list-style: none;
 
 }
 #bookingindex{
     padding-left: 5%;
     list-style: none;
-
 
 }
 #viewbarbersindex{
@@ -52,8 +56,71 @@
     width: 100%;
 }
 #HomeArt1{
-
+    width: 50%;
+    padding: 2%;
+    box-sizing: border-box;
 }
 #HomeArt2{
-
+    width: 50%;
+    text-align: center;
+}
+#text1{
+    color: black;
+    font-family: sans-serif;
+    margin: 10px 0;
+}
+#text2{
+    color: black;
+    font-family: sans-serif;
+    margin: 10px 0;
+}
+#text3{
+    color: black;
+    font-family: sans-serif;
+    margin: 10px 0;
+}
+#text4{
+    color: black;
+    font-family: sans-serif;
+    margin: 10px 0;
+}
+.art1Image1{
+    width: 60%;
+    height: auto;
+    margin: 2% 0;
+    display: block;
+}
+.art1Image2{
+    width: 60%;
+    height: auto;
+    margin: 2% 0;
+    display: block;
+}
+.art1Image3{
+    width: 60%;
+    height: auto;
+    margin: 2% 0;
+    display: block;
+}
+.art1Image4{
+    width: 60%;
+    height: auto;
+    margin: 2% 0;
+    display: block;
+}
+#text5{
+    color: black;
+    font-family: Verdana, sans-serif;
+    margin: 10px 0;
+}
+#text6{
+    padding-top: 20%;
+    color: black;
+    font-family: Verdana, sans-serif;
+    margin: 10px 0;
+}
+#text7{
+    color: black;
+    font-family: Verdana, sans-serif;
+    margin: 10px 0;
 }
