@@ -124,3 +124,22 @@
     font-family: Verdana, sans-serif;
     margin: 10px 0;
 }
+#headerAboutUs{
+    text-align: center;
+    font-size: 150%;
+    font-family: sans-serif;
+    margin-top: 5%;
+}
+#AboutUsText{
+    text-align: center;
+    font-size: 120%;
+    font-family: sans-serif;
+    margin: 5% 10%;
+}
+#footerText1{
+    text-align: center;
+    font-size: 100%;
+    font-family: sans-serif;
+    margin-top: 2%;
+
+}
