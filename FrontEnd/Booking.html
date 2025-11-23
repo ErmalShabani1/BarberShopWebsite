@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="Booking.css">
+</head>
+<body>
+    <div class="container" id="loginContainer">
+        <h2>LogIn</h2>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <select id="role">
+                <option value="">Select Role</option>
+                <option value="admin">Admin</option>
+                <option value="barber">Barber</option>
+                <option value="customer">Customer</option>
+            </select>
+            <button type="submit">LogIn</button>
+        </form>
+    </div>
+
+    <div class="container" id="dashboard" style="display: none;">
+        <h2>Welcome</h2>
+        <button id="logoutbtn">LogOut</button>
+        
+        <div id="adminSection" class="roleSelection">
+            <h3>Admin Dashboard</h3>
+            <p>View and manage all bookings here</p>
+        </div>
+
+        <div id="barberSection" class="roleSelection">
+            <h3>Barber Dashboard</h3>
+            <p>View assigned bookings</p>
+        </div>
+
+        <div id="customerSection" class="roleSelection">
+            <h3>Customer Dashboard</h3>
+            <p>Book your service and view your bookings</p>
+        </div>
+    </div>
+
+<script src="Booking.js"></script>
+</body>
+</html>
