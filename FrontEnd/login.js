@@ -207,3 +207,34 @@ const auth = new AuthSystem();
 document.addEventListener('DOMContentLoaded', () => {
     auth.updateNavigation();
 });
+
+// Login form submission handler
+document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-message');
+            const successMsg = document.getElementById('success-message');
+            
+            const result = auth.login(username, password);
+            
+            if (result.success) {
+                successMsg.textContent = 'Login successful! Redirecting...';
+                successMsg.style.display = 'block';
+                errorMsg.style.display = 'none';
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            } else {
+                errorMsg.textContent = result.message;
+                errorMsg.style.display = 'block';
+                successMsg.style.display = 'none';
+            }
+        });
+    }
+});
