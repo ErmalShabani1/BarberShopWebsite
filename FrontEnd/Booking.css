@@ -28,3 +28,47 @@ body{
     object-fit: cover;
     transition: transform 0.3s, box-shadow 0.3s;
 }
+
+.logo {
+width: 60px;
+height: 60px;
+border-radius: 50%;
+border: 2px solid orange;
+object-fit: cover;
+transition: transform 0.3s, box-shadow 0.3s;
+transform: scale(1.1);
+box-shadow: 0 0 8px orange(255, 165, 0, 0.7);
+}
+
+.brand-title{
+color: orange;
+font-size: 2rem;
+font-weight: bold;
+text-shadow: 1px 1px 3px black(0,0,0,0.5);
+}
+
+.main-nav {
+background: white;
+box-shadow: 0 2px 5px black(0,0,0,0.1);
+position: sticky;
+top: 0;
+z-index: 100;
+}
+
+.nav-menu {
+display: flex;
+justify-content: center;
+list-style: none;
+gap: 1rem;
+}
+
+.nav-link {
+padding: 0.5rem 1rem;
+color: grey;
+text-decoration: none;
+font-weight: 600;
+transition: all 0.3s;
+}
+
+
+
