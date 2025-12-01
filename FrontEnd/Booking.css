@@ -70,6 +70,20 @@ font-weight: 600;
 transition: all 0.3s;
 }
 
+.nav-link,
+.nav-link.active {
+background: linear-gradient(135deg, orange, yellow);
+color: black;
+transform: translateY(-2px);
+}
+
+.main-footer {
+background: linear-gradient(135deg, black,grey);
+color: orange;
+text-align: center;
+padding: 1rem 0;
+}
+
 .booking-container {
 max-width: 800px;
 margin: 2rem auto;
@@ -86,8 +100,35 @@ color: black;
 margin-bottom: 2rem;
 }
 
-.barber-card,
-.service-option,
+.barber-card{
+background: white;
+padding: 1rem;
+border-radius: 10px;
+cursor: pointer;
+text-align: center;
+transition: all 0.3s;
+border: 2px solid transparent;
+box-shadow: 0 4px 12px black(0,0,0,0.1);
+transform: translateY(-3px);
+border-color: orange;
+box-shadow: 0 8px 20px rgba(212,175,55,0.3);
+}
+
+.service-option
+{
+background: white;
+padding: 1rem;
+border-radius: 10px;
+cursor: pointer;
+text-align: center;
+transition: all 0.3s;
+border: 2px solid transparent;
+box-shadow: 0 4px 12px black(0,0,0,0.1);
+transform: translateY(-3px);
+border-color: orange;
+box-shadow: 0 8px 20px rgba(212,175,55,0.3);
+}
+
 .time-slot {
 background: white;
 padding: 1rem;
@@ -100,6 +141,14 @@ box-shadow: 0 4px 12px black(0,0,0,0.1);
 transform: translateY(-3px);
 border-color: orange;
 box-shadow: 0 8px 20px rgba(212,175,55,0.3);
+}
+
+.barber-card,
+.service-option,
+.time-slot {
+transform: translateY(-3px);
+border-color: orange;
+box-shadow: 0 8px 20px brown(212,175,55,0.3);
 }
 
 .selected {
@@ -130,6 +179,18 @@ margin-top: 1rem;
 
 .submit-booking:hover() {
 transform: translateY(-2px);
+}
+
+.error-message,
+.success-message {
+text-align: center;
+margin: 0.5rem 0;
+display: none;
+}
+
+.error-message.show,
+.success-message.show {
+display: block;
 }
 
 .login-modal {
