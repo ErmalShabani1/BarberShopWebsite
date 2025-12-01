@@ -128,5 +128,51 @@ transition: all 0.3s;
 margin-top: 1rem;
 }
 
+.submit-booking:hover() {
+transform: translateY(-2px);
+}
 
+.login-modal {
+display: none;
+position: fixed;
+inset: 0;
+background: black(0,0,0,0.7);
+align-items: center;
+justify-content: center;
+z-index: 1000;
+}
+
+.login-modal.show {
+display: flex;
+}
+
+.login-modal-content {
+background: white;
+padding: 2rem;
+border-radius: 15px;
+width: 90%;
+max-width: 400px;
+position: relative;
+}
+
+.close-modal {
+position: absolute;
+top: 1rem;
+right: 1rem;
+background: pink;
+color: white;
+border: none;
+width: 30px;
+height: 30px;
+border-radius: 50%;
+cursor: pointer;
+}
+
+@media (max-width: 768px) {
+.barber-card,
+.service-grid,
+.time-slots {
+grid-template-columns: 1fr;
+}
+}
 
