@@ -364,7 +364,7 @@ box-shadow:0 5px 15px rgba(212,175,55,0.3);
 .time-slot.selected { 
 background: linear-gradient(135deg,orange,yellow); 
 color:black; 
-border-color:orange; 
+border-color:rgb(225, 156, 27); 
 font-weight:600; 
 box-shadow:0 5px 15px rgba(212,175,55,0.5); 
 }
@@ -373,6 +373,48 @@ box-shadow:0 5px 15px rgba(212,175,55,0.5);
 opacity:0.4; 
 cursor:pointer;
 background:white; 
+}
+
+.booking-summary { 
+background: linear-gradient(135deg,#fff9e6,#fff); 
+padding:3%; 
+border-radius:15px; 
+margin-top:3%; 
+border:2px solid #d4af37; 
+box-shadow:0 10px 30px rgba(212,175,55,0.2); 
+}
+
+.booking-summary h3 { 
+color:#1a1a1a; 
+font-size:180%; margin-bottom:3%; 
+text-align:center; 
+font-weight:600; 
+}
+
+.summary-item {
+display: flex;
+justify-content: space-between;
+padding: 2%;
+border-bottom: 1px solid rgba(212,175,55,0.2);
+font-size: 110%;
+}
+
+.summary-item {
+border-bottom: none;
+font-weight: 700;
+font-size: 130%;
+color: #d4af37;
+margin-top: 2%;
+}
+
+.summary-item span {
+color: #666;
+font-weight: 500;
+}
+
+.summary-item span {
+color: #1a1a1a;
+font-weight: 600;
 }
 
 .barber-card,
@@ -396,11 +438,35 @@ box-shadow: 0 8px 20px brown(212,175,55,0.3);
     transition: transform 0.3s ease; 
 }
 
-
+.submit-booking {
+display: block;
+width: 100%;
+padding: 2.5% 5%;
+background: linear-gradient(135deg,#d4af37,#f6e05e);
+color: #1a1a1a;
+border: none;
+border-radius: 50px;
+font-size: 140%;
+font-weight: bold;
+cursor: pointer;
+transition: all 0.4s ease;
+margin-top: 3%;
+text-transform: uppercase;
+letter-spacing: 1px;
+box-shadow: 0 8px 20px rgba(212,175,55,0.4);
+}
 
 .selected {
 border-color: orange;
 background: white;
+}
+
+.submit-booking {
+background: linear-gradient(135deg,#ccc,#ddd);
+cursor: not-allowed;
+box-shadow: none;
+transform: none;
+opacity: 0.6;
 }
 
 .booking-summary {
@@ -411,21 +477,12 @@ margin-top: 1.5rem;
 border: 2px solid orange;
 }
 
-.submit-booking {
-width: 100%;
-padding: 0.75rem;
-background: linear-gradient(135deg, orange, #f6e05e);
-color: black;
-border: none;
-border-radius: 50px;
-font-weight: bold;
-cursor: pointer;
-transition: all 0.3s;
-margin-top: 1rem;
-}
+
 
 .submit-booking:hover() {
-transform: translateY(-2px);
+background: linear-gradient(135deg,#f6e05e,#d4af37);
+transform: translateY(-3px);
+box-shadow: 0 12px 30px rgba(212,175,55,0.6);
 }
 
 .error-message,
