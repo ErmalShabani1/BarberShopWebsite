@@ -220,20 +220,101 @@ font-size: 95%;
 margin: 1% 0; 
 }
 
-.service-option
-{
-background: white;
-padding: 1rem;
-border-radius: 10px;
+.slider-btn {
+position: absolute;
+top: 50%;
+transform: translateY(-50%);
+background: linear-gradient(135deg, orange, yellow);
+color: black;
+border: none;
+width: 50px;
+height: 50px;
+border-radius: 50%;
 cursor: pointer;
-text-align: center;
-transition: all 0.3s;
-border: 2px solid transparent;
-box-shadow: 0 4px 12px black(0,0,0,0.1);
-transform: translateY(-3px);
-border-color: orange;
-box-shadow: 0 8px 20px rgba(212,175,55,0.3);
+font-size: 180%;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.3s ease;
+z-index: 10;
+box-shadow: 0 5px 15px rgba(212,175,55,0.4);
 }
+
+.slider-btn { 
+background: linear-gradient(135deg, #f6e05e, #d4af37); 
+transform: translateY(-50%) scale(1.15); 
+box-shadow: 0 8px 20px rgba(212,175,55,0.6); 
+}
+
+.slider-btn.prev { 
+left: -1%; 
+}
+
+.slider-btn.next { 
+right: -1%; 
+}
+
+.service-grid { 
+display: grid; 
+grid-template-columns: repeat(auto-fit, minmax(23%,1fr)); 
+gap: 2.5%; 
+}
+
+.service-option{
+background: linear-gradient(135deg,white,white);
+padding: 3%;
+border-radius: 15px;
+cursor: pointer;
+border: 3px solid transparent;
+text-align: center;
+box-shadow: 0 5px 15px black(0,0,0,0.1);
+position: relative;
+overflow: hidden;
+}
+
+.service-option::before {
+content: '';
+position: absolute;
+top:0; left:0; right:0; height:5px;
+background: linear-gradient(90deg,orange,yellow);
+transform: scaleX(0);
+transition: transform 0.4s ease;
+}
+
+.service-option:hover::before { 
+transform: scaleX(1); 
+}
+
+.service-option { 
+transform: translateY(-8px); 
+box-shadow: 0 15px 30px rgba(212,175,55,0.3); 
+border-color: rgba(212,175,55,0.5); 
+}
+
+.service-option.selected { 
+border-color: #d4af37; 
+background: linear-gradient(135deg,white,white); 
+box-shadow: 0 10px 25px rgba(212,175,55,0.4); 
+}
+
+.service-option h3 { 
+color:black; 
+margin-bottom:3%; 
+font-size:150%; 
+font-weight:600; 
+}
+
+.service-option .price { 
+color:orange; 
+font-size:180%; 
+margin:2% 0; 
+}
+
+.service-option .duration { 
+color:grey; 
+font-size:100%; 
+}
+
 
 .time-slot {
 background: white;
@@ -270,25 +351,7 @@ box-shadow: 0 8px 20px brown(212,175,55,0.3);
     transition: transform 0.3s ease; 
 }
 
-.slider-btn { 
-    position: absolute; 
-    top: 50%; 
-    transform: translateY(-50%); 
-    background: linear-gradient(135deg, #d4af37 0%, #f6e05e 100%); 
-    color: #1a1a1a; 
-    border: none; 
-    width: 50px; 
-    height: 50px; 
-    border-radius: 50%; 
-    cursor: pointer; 
-    font-size: 180%; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    transition: all 0.3s ease; 
-    z-index: 10; 
-    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); 
-}
+
 
 .selected {
 border-color: orange;
