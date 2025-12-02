@@ -157,25 +157,67 @@ box-shadow: 0 5px 15px black(0,0,0,0.08);
 
 .step-title {
 font-size: 180%;
-color: #d4af37;
+color: orange;
 margin-bottom: 2%;
 padding-bottom: 1%;
-border-bottom: 3px solid #d4af37;
+border-bottom: 3px solid orange;
 font-weight: 600;
 }
 
-.barber-card{
-background: white;
-padding: 1rem;
-border-radius: 10px;
-cursor: pointer;
+.barber-slider { position: relative; overflow: hidden; padding: 3% 5%; }
+.barber-track { display: flex; gap: 3%; transition: transform 0.5s ease; }
+.barber-card {
+min-width: 28%;
+flex-shrink: 0;
+background: linear-gradient(135deg, #fff, #f9f9f9);
+border-radius: 15px;
+padding: 3%;
 text-align: center;
-transition: all 0.3s;
-border: 2px solid transparent;
-box-shadow: 0 4px 12px black(0,0,0,0.1);
-transform: translateY(-3px);
-border-color: orange;
-box-shadow: 0 8px 20px rgba(212,175,55,0.3);
+cursor: pointer;
+transition: all 0.4s ease;
+border: 3px solid transparent;
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.barber-card { 
+    transform: translateY(-8px) scale(1.02); 
+    box-shadow: 0 15px 30px rgba(212,175,55,0.3); 
+    border-color: rgba(212,175,55,0.5); 
+}
+
+.barber-card.selected { 
+border-color: orange; 
+background: linear-gradient(135deg, white, white); 
+box-shadow: 0 10px 25px rgba(212,175,55,0.4); 
+}
+
+.barber-card img { 
+width: 80%; 
+max-width: 150px; 
+aspect-ratio: 1/1;
+border-radius: 50%; 
+margin-bottom: 5%; 
+object-fit: cover; 
+border: 4px solid orange; 
+box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+transition: transform 0.3s; 
+}
+
+.barber-card img { 
+transform: scale(1.1); 
+}
+
+.barber-card h3 { 
+color: #1a1a1a; 
+margin-bottom: 2%; 
+font-size: 140%; 
+font-weight: 600; 
+}
+
+.barber-card p { 
+color: grey; 
+font-size: 95%; 
+margin: 1% 0; 
 }
 
 .service-option
