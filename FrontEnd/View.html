@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Barbers</title>
+    <link rel="stylesheet" href="View.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-content">
+            <img src="C:\xampp\htdocs\BarberShopWebsite\Dizajn-ZhvillimWeb\images/image1.jpg" class="logo" alt="Barbershop Logo">
+            <h1 class="brand-title">BARBERSHOP</h1>
+            <img src="C:\xampp\htdocs\BarberShopWebsite\Dizajn-ZhvillimWeb\images/image1.jpg" class="logo" alt="Barbershop Logo">
+        </div>
+    </header>
+
+     <nav class="main-nav">
+        <ul class="nav-menu">
+            <li><a href="index.html" class="nav-link">Home</a></li>
+            <li><a href="Booking.html" class="nav-link">Booking</a></li>
+            <li><a href="#" class="nav-link">View Barbers</a></li>
+            <li><a href="#" class="nav-link">Contact</a></li>
+            <li><a href="edit.html" class="nav-link active">Edit / Cancel</a></li>
+        </ul>
+    </nav>
+
+     <section class="barber-view-container">
+        <h2 class="section-title">Our Expert Barbers</h2>
+        <div class="barber-slider">
+            <button class="slider-btn prev" onclick="slideBarbers(-1)">‹</button>
+            <div class="barber-track" id="barber-track">
+                <div class="barber-card">
+                    <img src="images/image1.jpg" alt="John Smith">
+                    <h3>John Smith</h3>
+                    <p>Expert in Fades & Classic Cuts</p>
+                    <p>⭐ 4.9 (150 reviews)</p>
+                </div>
+                <div class="barber-card">
+                    <img src="images/image2.jpg" alt="Mike Johnson">
+                    <h3>Mike Johnson</h3>
+                    <p>Specialist in Modern Styles</p>
+                    <p>⭐ 4.8 (120 reviews)</p>
+                </div>
+                <div class="barber-card">
+                    <img src="images/image3.jpg" alt="David Brown">
+                    <h3>David Brown</h3>
+                    <p>Master of Beard Grooming</p>
+                    <p>⭐ 4.9 (180 reviews)</p>
+                </div>
+                <div class="barber-card">
+                    <img src="images/image4.jpg" alt="Chris Wilson">
+                    <h3>Chris Wilson</h3>
+                    <p>Contemporary Hair Styling Expert</p>
+                    <p>⭐ 4.7 (95 reviews)</p>
+                </div>
+            </div>
+            <button class="slider-btn next" onclick="slideBarbers(1)">›</button>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <p>Copyright © 2025 Barbershop. All rights reserved.</p>
+    </footer>
+
+    <script src="View.js"></script>
+</body>
+</html>
