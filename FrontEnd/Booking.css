@@ -6,7 +6,7 @@
 
 body{
     font-family: 'Times New Roman', Times, serif;
-    background-color: beige;
+    background-color: linear-gradient(135deg, white, lightgrey);;
     color: grey;
     background: linear-gradient(135deg, white, lightgrey);
     min-height: 100vh;
@@ -27,7 +27,7 @@ top: 0;
 left: -100%;
 width: 100%;
 height: 100%;
-background: linear-gradient(90deg, transparent, brown(212,175,55,0.3), transparent);
+ background: linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent);
 animation: shimmer 3s infinite;
 }
 
@@ -55,7 +55,7 @@ border: 2px solid orange;
 object-fit: cover;
 transition: transform 0.3s, box-shadow 0.3s;
 transform: scale(1.1);
-box-shadow: 0 0 8px orange(255, 165, 0, 0.7);
+box-shadow: 0 0 8px rgba(255,165,0,0.7);
 }
 
 .brand-title{
@@ -63,13 +63,18 @@ color: orange;
 font-size: 300%;
 font-weight: bold;
 letter-spacing: 0.5%;
-text-shadow: 0.3% 0.3% 0.6% black(0,0,0,0.5);
+text-shadow: 0.3% 0.3% 0.6% rgba(0,0,0,0.5);
 animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    0% { text-shadow: 0 0 5px orange, 0 0 10px yellow; }
+    100% { text-shadow: 0 0 20px orange, 0 0 30px yellow; }
 }
 
 .main-nav {
 background: white;
-box-shadow: 0 2px 5px black(0,0,0,0.1);
+box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 position: sticky;
 top: 0;
 z-index: 100;
@@ -117,7 +122,7 @@ background: linear-gradient(135deg, orange,yellow);
 color: black;
 border-bottom-color: orange;
 transform: translateY(-2px);
-box-shadow: 0 4px 10px brown(212,175,55,0.4);
+box-shadow: 0 4px 10px rgba(212,175,55,0.4);
 }
 
 .main-footer {
@@ -132,9 +137,9 @@ margin-top: 3%;
 max-width: 85%;
 margin: 3% auto;
 padding: 3%;
-background: beige(255,255,255,0.95);
+background: rgba(255,255,255,0.95);
 border-radius: 15px;
-box-shadow: 0 10px 30px black(0,0,0,0.15);
+box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
 
 .booking-title {
@@ -152,7 +157,7 @@ margin-bottom: 4%;
 padding: 2.5%;
 background: linear-gradient(135deg, white, white);
 border-radius: 15px;
-box-shadow: 0 5px 15px black(0,0,0,0.08);
+box-shadow: 0 5px 15px rgba(0,0,0,0.08);
 }
 
 .step-title {
@@ -223,8 +228,8 @@ margin: 1% 0;
 .slider-btn {
 position: absolute;
 top: 50%;
-transform: translateY(-50%);
-background: linear-gradient(135deg, orange, yellow);
+transform: translateY(-50%) scale(1.15);
+background: linear-gradient(135deg, #f6e05e, #d4af37);
 color: black;
 border: none;
 width: 50px;
@@ -267,7 +272,7 @@ border-radius: 15px;
 cursor: pointer;
 border: 3px solid transparent;
 text-align: center;
-box-shadow: 0 5px 15px black(0,0,0,0.1);
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 position: relative;
 overflow: hidden;
 }
@@ -316,9 +321,11 @@ font-size:100%;
 }
 
 .form-group, .login-form-group { 
-display: flex-direction; 
+display: flex;
+flex-direction: column;
 margin-bottom:1rem; 
 }
+
 
 .form-group label, .login-form-group label { 
 margin-bottom:0.5rem; 
@@ -337,11 +344,13 @@ transition: 0.3s ease;
 border-color:orange; 
 }
 
-.time-slots { 
-display: grid-template-columns(auto-fill,minmax(18%,1fr)); 
-gap:2%; 
-margin-top:2%; 
+.time-slots {
+display: grid;
+grid-template-columns: repeat(auto-fill,minmax(18%,1fr));
+gap:2%;
+margin-top:2%;
 }
+
 
 .time-slot { 
 padding:2.5%; 
@@ -422,7 +431,7 @@ font-weight: 600;
 .time-slot {
 transform: translateY(-3px);
 border-color: orange;
-box-shadow: 0 8px 20px brown(212,175,55,0.3);
+box-shadow: 0 8px 20px rgba(212,175,55,0.3);
 }
 
 .barber-card img { 
@@ -479,7 +488,7 @@ border: 2px solid orange;
 
 
 
-.submit-booking:hover() {
+.submit-booking:hover {
 background: linear-gradient(135deg,#f6e05e,#d4af37);
 transform: translateY(-3px);
 box-shadow: 0 12px 30px rgba(212,175,55,0.6);
@@ -501,7 +510,7 @@ display: block;
 display: none;
 position: fixed;
 inset: 0;
-background: black(0,0,0,0.7);
+background: rgba(0,0,0,0.7);
 align-items: center;
 justify-content: center;
 z-index: 1000;
