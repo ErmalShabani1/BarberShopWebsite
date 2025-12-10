@@ -1,0 +1,117 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body */
+body {
+    font-family: 'Times New Roman', Times, serif;
+    background: linear-gradient(135deg, white, lightgrey);
+    color: #333;
+    min-height: 100vh;
+}
+
+/* Header */
+.main-header {
+    background: linear-gradient(135deg, black, grey);
+    padding: 15px 0;
+    text-align: center;
+    color: orange;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+/* Slider Section */
+.barber-view-container {
+    max-width: 90%;
+    margin: 3% auto;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    color: orange;
+    margin-bottom: 2%;
+}
+
+/* Barber Slider */
+.barber-slider {
+    position: relative;
+    overflow: hidden;
+    padding: 2% 0;
+}
+
+.barber-track {
+    display: flex;
+    gap: 2%;
+    transition: transform 0.5s ease;
+}
+
+.barber-card {
+    min-width: 25%;
+    background: linear-gradient(135deg, #fff, #f9f9f9);
+    border-radius: 15px;
+    padding: 1.5%;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.barber-card img {
+    width: 80%;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    object-fit: cover;
+    border: 3px solid orange;
+}
+
+.barber-card h3 {
+    color: #1a1a1a;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.barber-card p {
+    color: grey;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+/* Slider Buttons */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, #f6e05e, #d4af37);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.slider-btn.prev { left: 0; }
+.slider-btn.next { right: 0; }
+
+/* Footer */
+.main-footer {
+    background: linear-gradient(135deg, black, grey);
+    color: orange;
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: 3%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .barber-card {
+        min-width: 70%;
+    }
+}
