@@ -7,20 +7,79 @@
 
 /* Body */
 body {
-    font-family: 'Times New Roman', Times, serif;
-    background: linear-gradient(135deg, white, lightgrey);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     color: #333;
     min-height: 100vh;
 }
 
 /* Header */
 .main-header {
-    background: linear-gradient(135deg, black, grey);
-    padding: 15px 0;
-    text-align: center;
-    color: orange;
+    background: linear-gradient(135deg, #1a1a1a 0%, #434343 100%);
+    padding: 2% 0;
+    box-shadow: 0 0.5% 2% rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.main-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 90%;
+    margin: 0 auto;
+    gap: 2%;
+    position: relative;
+    z-index: 1;
+}
+
+.header-content h1 {
+    color: #d4af37;
     font-size: 2rem;
     font-weight: bold;
+    text-align: center;
+}
+
+.logo {
+    width: 5%;
+    height: auto;
+    min-width: 60px;
+    max-width: 80px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    border: 0.3% solid #d4af37;
+    object-fit: cover;
+    box-shadow: 0 0 2% rgba(212, 175, 55, 0.8);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 0 3% rgba(212, 175, 55, 1);
+}
+
+.brand-title {
+    color: #d4af37;
+    font-size: 300%;
+    font-weight: bold;
+    letter-spacing: 0.5%;
+    text-shadow: 0.3% 0.3% 0.6% rgba(0,0,0,0.5);
 }
 
 .main-nav {
@@ -91,8 +150,9 @@ body {
 .section-title {
     text-align: center;
     font-size: 2.5rem;
-    color: orange;
+    color: #d4af37;
     margin-bottom: 2%;
+    font-weight: 600;
 }
 
 /* Barber Slider */
@@ -115,15 +175,25 @@ body {
     padding: 1.5%;
     text-align: center;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.barber-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+    border-color: #d4af37;
 }
 
 .barber-card img {
-    width: 80%;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
-    margin-bottom: 10px;
+    margin: 0 auto 10px;
     object-fit: cover;
-    border: 3px solid orange;
+    border: 3px solid #d4af37;
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+    display: block;
 }
 
 .barber-card h3 {
@@ -143,7 +213,7 @@ body {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: linear-gradient(135deg, #f6e05e, #d4af37);
+    background: linear-gradient(135deg, #d4af37 0%, #f6e05e 100%);
     border: none;
     width: 50px;
     height: 50px;
@@ -154,6 +224,14 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 10;
+    color: #1a1a1a;
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4);
+    transition: all 0.3s ease;
+}
+
+.slider-btn:hover {
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 15px rgba(212, 175, 55, 0.6);
 }
 
 .slider-btn.prev { left: 0; }
@@ -161,11 +239,12 @@ body {
 
 /* Footer */
 .main-footer {
-    background: linear-gradient(135deg, black, grey);
-    color: orange;
+    background: linear-gradient(135deg, #1a1a1a 0%, #434343 100%);
+    color: #d4af37;
     text-align: center;
     padding: 1rem 0;
     margin-top: 3%;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
 }
 
 /* Responsive */
