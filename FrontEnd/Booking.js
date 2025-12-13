@@ -1,4 +1,4 @@
-// Booking System
+// Booking Sistem
 class BookingSystem {
     constructor() {
         this.selectedBarber = null;
@@ -7,7 +7,7 @@ class BookingSystem {
         this.selectedTime = null;
         this.currentSlide = 0;
         
-        // Get barber data
+        // Merr te dhenat e berberit
         this.barbers = [
             { id: 1, name: 'John Smith', specialty: 'Expert in Fades & Classic Cuts' },
             { id: 2, name: 'Mike Johnson', specialty: 'Specialist in Modern Styles' },
@@ -274,6 +274,70 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Handle Register Form
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            
+            const errorMsg = document.getElementById('register-error-message');
+            const successMsg = document.getElementById('register-success-message');
+            
+            // Clear previous messages
+            errorMsg.textContent = '';
+            successMsg.textContent = '';
+            
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                errorMsg.textContent = 'Passwords do not match!';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            // Validate password length
+            if (password.length < 6) {
+                errorMsg.textContent = 'Password must be at least 6 characters!';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            // Store user in localStorage (in real app, this would be a backend call)
+            const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            
+            // Check if username already exists
+            if (users.find(u => u.username === username)) {
+                errorMsg.textContent = 'Username already exists!';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            // Add new user
+            users.push({
+                username: username,
+                email: email,
+                password: password,
+                role: 'user'
+            });
+            
+            localStorage.setItem('registeredUsers', JSON.stringify(users));
+            
+            successMsg.textContent = 'Registration successful! You can now login.';
+            successMsg.style.display = 'block';
+            errorMsg.style.display = 'none';
+            
+            // Switch to login form after 2 seconds
+            setTimeout(() => {
+                showLoginForm();
+                document.getElementById('modal-username').value = username;
+            }, 2000);
+        });
+    }
+
     // Check if user is logged in - show modal immediately if not
     if (!auth.isLoggedIn()) {
         showLoginModal();
@@ -284,3 +348,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Toggle between login and register forms
+function showLoginForm() {
+    document.getElementById('login-form-container').style.display = 'block';
+    document.getElementById('register-form-container').style.display = 'none';
+}
+
+function showRegisterForm() {
+    document.getElementById('login-form-container').style.display = 'none';
+    document.getElementById('register-form-container').style.display = 'block';
+}

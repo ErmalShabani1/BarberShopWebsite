@@ -24,8 +24,70 @@
 			<li><a href="View.html" class="nav-link">View Barbers</a></li>
 			<li><a href="kontakti.html" class="nav-link active">Contact</a></li>
 			<li><a href="edit.html" class="nav-link">Edit / Cancel</a></li>
+			<li><button id="auth-btn" class="nav-link auth-btn" onclick="openLoginModal()">Login</button></li>
 		</ul>
 	</nav>
+
+	<!-- Login/Register Modal -->
+	<div id="login-modal" class="login-modal">
+		<div class="login-modal-content">
+			<button class="close-modal" onclick="closeLoginModal()">&times;</button>
+			
+			<!-- Login Form -->
+			<div id="login-form-container" class="auth-form-container">
+				<h2>Login</h2>
+				<form id="login-form">
+					<div class="login-form-group">
+						<label for="modal-username">Username</label>
+						<input type="text" id="modal-username" name="username" required>
+					</div>
+					<div class="login-form-group">
+						<label for="modal-password">Password</label>
+						<input type="password" id="modal-password" name="password" required>
+					</div>
+					<button type="submit" class="login-btn">Login</button>
+					<div class="modal-error-message" id="modal-error-message"></div>
+					<div class="modal-success-message" id="modal-success-message"></div>
+				</form>
+				<p class="toggle-form">Don't have an account? <a href="#" onclick="showRegisterForm(); return false;">Register</a></p>
+				
+				<!-- Demo Credentials -->
+				<div class="demo-credentials">
+					<h4>Demo Logins:</h4>
+					<p><strong>Admin:</strong> admin / admin123</p>
+					<p><strong>Barber:</strong> barber / barber123</p>
+					<p><strong>User:</strong> user / user123</p>
+				</div>
+			</div>
+
+			<!-- Register Form -->
+			<div id="register-form-container" class="auth-form-container" style="display: none;">
+				<h2>Register</h2>
+				<form id="register-form">
+					<div class="login-form-group">
+						<label for="register-username">Username</label>
+						<input type="text" id="register-username" name="username" required>
+					</div>
+					<div class="login-form-group">
+						<label for="register-email">Email</label>
+						<input type="email" id="register-email" name="email" required>
+					</div>
+					<div class="login-form-group">
+						<label for="register-password">Password</label>
+						<input type="password" id="register-password" name="password" required>
+					</div>
+					<div class="login-form-group">
+						<label for="register-confirm-password">Confirm Password</label>
+						<input type="password" id="register-confirm-password" name="confirm-password" required>
+					</div>
+					<button type="submit" class="login-btn">Register</button>
+					<div class="modal-error-message" id="register-error-message"></div>
+					<div class="modal-success-message" id="register-success-message"></div>
+				</form>
+				<p class="toggle-form">Already have an account? <a href="#" onclick="showLoginForm(); return false;">Login</a></p>
+			</div>
+		</div>
+	</div>
 
 	<!-- Contact Section -->
 	<section class="contact-container">

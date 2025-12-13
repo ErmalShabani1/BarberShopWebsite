@@ -160,6 +160,17 @@ class AuthSystem {
             }
         }
 
+        // Hide login button if logged in
+        const authBtn = document.getElementById('auth-btn');
+        if (authBtn) {
+            const authListItem = authBtn.closest('li');
+            if (this.isLoggedIn()) {
+                if (authListItem) authListItem.style.display = 'none';
+            } else {
+                if (authListItem) authListItem.style.display = 'block';
+            }
+        }
+
         // Add logout button if logged in
         this.addUserInfo();
     }
@@ -172,13 +183,18 @@ class AuthSystem {
                 // Remove existing user info if present
                 const existingUserInfo = document.getElementById('user-info');
                 if (existingUserInfo) existingUserInfo.remove();
+                const existingLogoutBtn = document.getElementById('logout-btn-item');
+                if (existingLogoutBtn) existingLogoutBtn.remove();
 
                 // Create user info element
                 const userInfo = document.createElement('li');
                 userInfo.id = 'user-info';
-                userInfo.style.marginLeft = 'auto';
+                userInfo.style.position = 'absolute';
+                userInfo.style.right = '150px';
+                userInfo.style.top = '50%';
+                userInfo.style.transform = 'translateY(-50%)';
                 userInfo.innerHTML = `
-                    <span class="nav-link" style="cursor: default;">
+                    <span class="nav-link" style="cursor: default; padding: 10px 15px; font-size: 14px;">
                         ${this.currentUser.fullName} (${this.currentUser.role})
                     </span>
                 `;
@@ -186,8 +202,13 @@ class AuthSystem {
 
                 // Add logout button
                 const logoutBtn = document.createElement('li');
+                logoutBtn.id = 'logout-btn-item';
+                logoutBtn.style.position = 'absolute';
+                logoutBtn.style.right = '5%';
+                logoutBtn.style.top = '50%';
+                logoutBtn.style.transform = 'translateY(-50%)';
                 logoutBtn.innerHTML = `
-                    <a href="#" class="nav-link" id="logout-btn">Logout</a>
+                    <a href="#" class="nav-link" id="logout-btn" style="font-size: 14px; padding: 10px 15px;">Logout</a>
                 `;
                 nav.appendChild(logoutBtn);
 
