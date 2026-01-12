@@ -19,11 +19,11 @@
 	<!-- Navigation -->
 	<nav class="main-nav">
 		<ul class="nav-menu">
-			<li><a href="index.html" class="nav-link active">Home</a></li>
-			<li><a href="Booking.html" class="nav-link">Booking</a></li>
-			<li><a href="View.html" class="nav-link">View Barbers</a></li>
-			<li><a href="kontakti.html" class="nav-link">Contact</a></li>
-			<li><a href="edit.html" class="nav-link">Edit / Cancel</a></li>
+			<li><a href="index.php" class="nav-link active">Home</a></li>
+			<li><a href="Booking.php" class="nav-link">Booking</a></li>
+			<li><a href="View.php" class="nav-link">View Barbers</a></li>
+			<li><a href="kontakti.php" class="nav-link">Contact</a></li>
+			<li><a href="edit.php" class="nav-link">Edit / Cancel</a></li>
 		</ul>
 	</nav>
 
@@ -32,7 +32,7 @@
 		<div class="hero-content">
 			<h2>Welcome to Premium Grooming</h2>
 			<p>Where Style Meets Professionalism</p>
-			<a href="Booking.html" class="cta-button">Book Now</a>
+			<a href="Booking.php" class="cta-button">Book Now</a>
 		</div>
 	</section>
 

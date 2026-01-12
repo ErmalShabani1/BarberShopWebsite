@@ -162,41 +162,53 @@ class BookingSystem {
         track.style.transform = `translateX(${offset}px)`;
     }
 
-    submitBooking() {
+    async submitBooking() {
         // Check if user is logged in
         if (!auth.isLoggedIn()) {
-            // Show login modal instead of redirecting
             showLoginModal();
             return;
         }
 
         // Get all booking data
         const bookingData = {
-            barber: this.selectedBarber,
-            service: this.selectedService,
-            date: this.selectedDate,
-            time: this.selectedTime,
-            customer: auth.currentUser,
-            status: 'pending',
-            createdAt: new Date().toISOString()
+            action: 'create',
+            serviceType: this.selectedService.name,
+            appointmentDate: this.selectedDate,
+            appointmentTime: this.selectedTime,
+            notes: `Barber: ${this.selectedBarber.name}, Service: ${this.selectedService.name} ($${this.selectedService.price})`
         };
 
-        // Save to localStorage (in real app, this would be saved to a database)
-        let bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-        bookingData.id = bookings.length + 1;
-        bookings.push(bookingData);
-        localStorage.setItem('bookings', JSON.stringify(bookings));
+        try {
+            const response = await fetch('../BackEnd/booking.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bookingData)
+            });
 
-        // Show success message
-        document.getElementById('success-message').textContent = 
-            'Booking confirmed! You will receive a confirmation shortly.';
-        document.getElementById('success-message').style.display = 'block';
-        document.getElementById('error-message').style.display = 'none';
+            const result = await response.json();
 
-        // Reset form after 2 seconds
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 2000);
+            if (result.success) {
+                document.getElementById('success-message').textContent = 
+                    'Booking confirmed! You will receive a confirmation shortly.';
+                document.getElementById('success-message').style.display = 'block';
+                document.getElementById('error-message').style.display = 'none';
+
+                setTimeout(() => {
+                    window.location.href = 'index.php';
+                }, 2000);
+            } else {
+                document.getElementById('error-message').textContent = result.message;
+                document.getElementById('error-message').style.display = 'block';
+                document.getElementById('success-message').style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Booking error:', error);
+            document.getElementById('error-message').textContent = 'Connection error. Please try again.';
+            document.getElementById('error-message').style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
+        }
     }
 }
 

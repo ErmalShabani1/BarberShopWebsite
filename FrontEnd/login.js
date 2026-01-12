@@ -1,128 +1,87 @@
 // Authentication System
 class AuthSystem {
     constructor() {
-        // Initialize users from localStorage or use defaults
-        this.initializeUsers();
-        this.currentUser = this.getCurrentUser();
-    }
-
-    initializeUsers() {
-        const storedUsers = localStorage.getItem('allUsers');
-        if (storedUsers) {
-            this.users = JSON.parse(storedUsers);
-        } else {
-            // Default users
-            this.users = {
-                admin: {
-                    username: 'admin',
-                    password: 'admin123',
-                    role: 'admin',
-                    fullName: 'Admin User',
-                    email: 'admin@barbershop.com',
-                    createdAt: new Date().toISOString()
-                },
-                barber: {
-                    username: 'barber',
-                    password: 'barber123',
-                    role: 'barber',
-                    fullName: 'John Barber',
-                    email: 'barber@barbershop.com',
-                    createdAt: new Date().toISOString()
-                },
-                user: {
-                    username: 'user',
-                    password: 'user123',
-                    role: 'user',
-                    fullName: 'Regular User',
-                    email: 'user@barbershop.com',
-                    createdAt: new Date().toISOString()
-                },
-                user2: {
-                    username: 'user2',
-                    password: 'user123',
-                    role: 'user',
-                    fullName: 'Jane Doe',
-                    email: 'jane@barbershop.com',
-                    createdAt: new Date().toISOString()
-                },
-                barber2: {
-                    username: 'barber2',
-                    password: 'barber123',
-                    role: 'barber',
-                    fullName: 'Mike Barber',
-                    email: 'mike@barbershop.com',
-                    createdAt: new Date().toISOString()
-                }
-            };
-            this.saveUsers();
-        }
-    }
-
-    saveUsers() {
-        localStorage.setItem('allUsers', JSON.stringify(this.users));
-    }
-
-    getAllUsers() {
-        return Object.values(this.users);
-    }
-
-    updateUserRole(username, newRole) {
-        if (this.users[username]) {
-            this.users[username].role = newRole;
-            this.saveUsers();
-            return true;
-        }
-        return false;
-    }
-
-    deleteUser(username) {
-        if (this.users[username] && username !== 'admin') {
-            delete this.users[username];
-            this.saveUsers();
-            return true;
-        }
-        return false;
-    }
-
-    // Login method
-    login(username, password) {
-        const user = Object.values(this.users).find(
-            u => u.username === username && u.password === password
-        );
-
-        if (user) {
-            const userData = {
-                username: user.username,
-                role: user.role,
-                fullName: user.fullName
-            };
-            localStorage.setItem('currentUser', JSON.stringify(userData));
-            this.currentUser = userData;
-            return { success: true, user: userData };
-        }
-        
-        return { success: false, message: 'Invalid username or password' };
-    }
-
-    // Logout method
-    logout() {
-        localStorage.removeItem('currentUser');
         this.currentUser = null;
-        window.location.href = 'index.html';
+        this.checkSession();
     }
 
-    // Get current logged in user
+    async checkSession() {
+        try {
+            const response = await fetch('../BackEnd/user_actions.php?action=getCurrentUser');
+            const result = await response.json();
+            if (result.success) {
+                this.currentUser = result.user;
+                this.updateNavigation();
+            }
+        } catch (error) {
+            console.error('Session check failed:', error);
+        }
+    }
+
+    async login(username, password) {
+        try {
+            const response = await fetch('../BackEnd/login.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                this.currentUser = result.user;
+                this.updateNavigation();
+            }
+            
+            return result;
+        } catch (error) {
+            console.error('Login error:', error);
+            return { success: false, message: 'Connection error. Please try again.' };
+        }
+    }
+
+    async register(username, email, password, fullName, phone) {
+        try {
+            const response = await fetch('../BackEnd/register.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, email, password, fullName, phone })
+            });
+
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error('Registration error:', error);
+            return { success: false, message: 'Connection error. Please try again.' };
+        }
+    }
+
+    async logout() {
+        try {
+            const response = await fetch('../BackEnd/user_actions.php?action=logout');
+            const result = await response.json();
+            
+            if (result.success) {
+                this.currentUser = null;
+                window.location.href = 'index.php';
+            }
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+    }
+
     getCurrentUser() {
-        const userData = localStorage.getItem('currentUser');
-        return userData ? JSON.parse(userData) : null;
+        return this.currentUser;
     }
 
-    // Check if user is logged in
     isLoggedIn() {
         return this.currentUser !== null;
     }
 
-    // Check user role
     isAdmin() {
         return this.currentUser && this.currentUser.role === 'admin';
     }
@@ -131,36 +90,31 @@ class AuthSystem {
         return this.currentUser && this.currentUser.role === 'barber';
     }
 
-    isUser() {
-        return this.currentUser && this.currentUser.role === 'user';
+    isClient() {
+        return this.currentUser && this.currentUser.role === 'client';
     }
 
-    // Require login for page access
-    requireLogin(redirectTo = 'login.html') {
+    requireLogin() {
         if (!this.isLoggedIn()) {
-            window.location.href = redirectTo;
+            alert('Please login to access this page');
             return false;
         }
         return true;
     }
 
-    // Update navigation based on user role
     updateNavigation() {
-        const editCancelLink = document.querySelector('a[href="edit.html"]');
+        const editCancelLink = document.querySelector('a[href="edit.php"]');
         
         if (editCancelLink) {
             const listItem = editCancelLink.closest('li');
             
-            if (this.isUser() || !this.isLoggedIn()) {
-                // Hide edit/cancel for regular users and non-logged users
+            if (this.isClient() || !this.isLoggedIn()) {
                 if (listItem) listItem.style.display = 'none';
             } else {
-                // Show for admin and barber
                 if (listItem) listItem.style.display = 'block';
             }
         }
 
-        // Hide login button if logged in
         const authBtn = document.getElementById('auth-btn');
         if (authBtn) {
             const authListItem = authBtn.closest('li');
@@ -171,22 +125,18 @@ class AuthSystem {
             }
         }
 
-        // Add logout button if logged in
         this.addUserInfo();
     }
 
-    // Add user info and logout button to navigation
     addUserInfo() {
         if (this.isLoggedIn()) {
             const nav = document.querySelector('.nav-menu');
             if (nav) {
-                // Remove existing user info if present
                 const existingUserInfo = document.getElementById('user-info');
                 if (existingUserInfo) existingUserInfo.remove();
                 const existingLogoutBtn = document.getElementById('logout-btn-item');
                 if (existingLogoutBtn) existingLogoutBtn.remove();
 
-                // Create user info element
                 const userInfo = document.createElement('li');
                 userInfo.id = 'user-info';
                 userInfo.style.position = 'absolute';
@@ -200,7 +150,6 @@ class AuthSystem {
                 `;
                 nav.appendChild(userInfo);
 
-                // Add logout button
                 const logoutBtn = document.createElement('li');
                 logoutBtn.id = 'logout-btn-item';
                 logoutBtn.style.position = 'absolute';
@@ -226,22 +175,57 @@ const auth = new AuthSystem();
 
 // Update navigation on page load
 document.addEventListener('DOMContentLoaded', () => {
-    auth.updateNavigation();
+    setTimeout(() => {
+        auth.updateNavigation();
+    }, 100);
 });
 
-// Login form submission handler
+// Login Modal Functions
+function openLoginModal() {
+    document.getElementById('login-modal').style.display = 'flex';
+    showLoginForm();
+}
+
+function closeLoginModal() {
+    document.getElementById('login-modal').style.display = 'none';
+    clearForms();
+}
+
+function showLoginForm() {
+    document.getElementById('login-form-container').style.display = 'block';
+    document.getElementById('register-form-container').style.display = 'none';
+}
+
+function showRegisterForm() {
+    document.getElementById('login-form-container').style.display = 'none';
+    document.getElementById('register-form-container').style.display = 'block';
+}
+
+function clearForms() {
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    if (loginForm) loginForm.reset();
+    if (registerForm) registerForm.reset();
+    
+    const errorMessages = document.querySelectorAll('.modal-error-message');
+    const successMessages = document.querySelectorAll('.modal-success-message');
+    errorMessages.forEach(msg => msg.style.display = 'none');
+    successMessages.forEach(msg => msg.style.display = 'none');
+}
+
+// Login form submission
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const errorMsg = document.getElementById('error-message');
-            const successMsg = document.getElementById('success-message');
+            const username = document.getElementById('modal-username').value;
+            const password = document.getElementById('modal-password').value;
+            const errorMsg = document.getElementById('modal-error-message');
+            const successMsg = document.getElementById('modal-success-message');
             
-            const result = auth.login(username, password);
+            const result = await auth.login(username, password);
             
             if (result.success) {
                 successMsg.textContent = 'Login successful! Redirecting...';
@@ -249,7 +233,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 errorMsg.style.display = 'none';
                 
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    closeLoginModal();
+                    window.location.reload();
                 }, 1000);
             } else {
                 errorMsg.textContent = result.message;
@@ -257,5 +242,54 @@ document.addEventListener('DOMContentLoaded', () => {
                 successMsg.style.display = 'none';
             }
         });
+    }
+
+    // Register form submission
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const confirmPassword = document.getElementById('reg-confirm-password').value;
+            const fullName = document.getElementById('reg-fullname').value;
+            const phone = document.getElementById('reg-phone').value;
+            const errorMsg = document.getElementById('reg-error-message');
+            const successMsg = document.getElementById('reg-success-message');
+            
+            if (password !== confirmPassword) {
+                errorMsg.textContent = 'Passwords do not match';
+                errorMsg.style.display = 'block';
+                successMsg.style.display = 'none';
+                return;
+            }
+            
+            const result = await auth.register(username, email, password, fullName, phone);
+            
+            if (result.success) {
+                successMsg.textContent = 'Registration successful! Please login.';
+                successMsg.style.display = 'block';
+                errorMsg.style.display = 'none';
+                
+                setTimeout(() => {
+                    showLoginForm();
+                    registerForm.reset();
+                }, 2000);
+            } else {
+                errorMsg.textContent = result.message;
+                errorMsg.style.display = 'block';
+                successMsg.style.display = 'none';
+            }
+        });
+    }
+});
+
+// Close modal when clicking outside
+window.addEventListener('click', (e) => {
+    const modal = document.getElementById('login-modal');
+    if (e.target === modal) {
+        closeLoginModal();
     }
 });
