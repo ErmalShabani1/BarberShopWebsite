@@ -172,6 +172,7 @@ class AuthSystem {
 
 // Initialize auth system
 const auth = new AuthSystem();
+window.authSystem = auth; // Make it globally accessible
 
 // Update navigation on page load
 document.addEventListener('DOMContentLoaded', () => {

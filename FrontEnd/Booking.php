@@ -10,9 +10,9 @@
     <!-- Pjesa e Headerit -->
     <header class="main-header">
         <div class="header-content">
-            <img src="C:\xampp\htdocs\BarberShopWebsite\Dizajn-ZhvillimWeb\images/image1.jpg" class="logo" alt="Barbershop Logo">
+            <img src="../images/image1.jpg" class="logo" alt="Barbershop Logo">
             <h1 class="brand-title">BARBERSHOP</h1>
-            <img src="C:\xampp\htdocs\BarberShopWebsite\Dizajn-ZhvillimWeb\images/image1.jpg" class="logo" alt="Barbershop Logo">
+            <img src="../images/image1.jpg" class="logo" alt="Barbershop Logo">
         </div>
     </header>
 
@@ -103,25 +103,25 @@
                 <button class="slider-btn prev" onclick="slideBarbers(-1)">‹</button>
                 <div class="barber-track" id="barber-track">
                     <div class="barber-card" data-barber-id="1" onclick="selectBarber(1)">
-                        <img src="C:\xampp\htdocs\BarberShopWebsite\Dizajn-ZhvillimWeb\images\image1.jpg" alt="Barber 1">
+                        <img src="../images/image1.jpg" alt="Barber 1">
                         <h3>John Smith</h3>
                         <p>Expert in Fades & Classic Cuts</p>
                         <p>⭐ 4.9 (150 reviews)</p>
                     </div>
                     <div class="barber-card" data-barber-id="2" onclick="selectBarber(2)">
-                        <img src="C:\xampp\htdocs\BarberShopWebsite\Dizajn-ZhvillimWeb\images\image1.jpg" alt="Barber 2">
+                        <img src="../images/image1.jpg" alt="Barber 2">
                         <h3>Mike Johnson</h3>
                         <p>Specialist in Modern Styles</p>
                         <p>⭐ 4.8 (120 reviews)</p>
                     </div>
                     <div class="barber-card" data-barber-id="3" onclick="selectBarber(3)">
-                        <img src="C:\xampp\htdocs\BarberShopWebsite\Dizajn-ZhvillimWeb\images\image1.jpg" alt="Barber 3">
+                        <img src="../images/image1.jpg" alt="Barber 3">
                         <h3>David Brown</h3>
                         <p>Master of Beard Grooming</p>
                         <p>⭐ 4.9 (180 reviews)</p>
                     </div>
                     <div class="barber-card" data-barber-id="4" onclick="selectBarber(4)">
-                        <img src="C:\xampp\htdocs\BarberShopWebsite\Dizajn-ZhvillimWeb\images\image1.jpg" alt="Barber 4">
+                        <img src="../images/image1.jpg" alt="Barber 4">
                         <h3>Chris Wilson</h3>
                         <p>Contemporary Hair Styling Expert</p>
                         <p>⭐ 4.7 (95 reviews)</p>

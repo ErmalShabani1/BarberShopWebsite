@@ -10,9 +10,9 @@
 	<!-- Header Section -->
 	<header class="main-header">
 		<div class="header-content">
-			<img src="C:\xampp\htdocs\BarberShopWebsite\Dizajn-ZhvillimWeb\images/image1.jpg" class="logo" alt="Barbershop Logo">
+			<img src="../images/image1.jpg" class="logo" alt="Barbershop Logo">
 			<h1 class="brand-title">BARBERSHOP</h1>
-			<img src="C:\xampp\htdocs\BarberShopWebsite\Dizajn-ZhvillimWeb\images/image1.jpg" class="logo" alt="Barbershop Logo">
+			<img src="../images/image1.jpg" class="logo" alt="Barbershop Logo">
 		</div>
 	</header>
 
@@ -41,19 +41,19 @@
 		<h2 class="section-title">Our Styles</h2>
 		<div class="styles-grid">
 			<div class="style-card">
-				<img src="C:\xampp\htdocs\BarberShopWebsite\Dizajn-ZhvillimWeb\images\image3.jpg" alt="High Fade">
+				<img src="../images/image3.jpg" alt="High Fade">
 				<h3>High Fade</h3>
 			</div>
 			<div class="style-card">
-				<img src="C:\xampp\htdocs\BarberShopWebsite\Dizajn-ZhvillimWeb\images\image2.jpg" alt="Low Fade">
+				<img src="../images/image2.jpg" alt="Low Fade">
 				<h3>Low Fade</h3>
 			</div>
 			<div class="style-card">
-				<img src="C:\xampp\htdocs\BarberShopWebsite\Dizajn-ZhvillimWeb\images\image4.jpg" alt="Mid Fade">
+				<img src="../images/image4.jpg" alt="Mid Fade">
 				<h3>Mid Fade</h3>
 			</div>
 			<div class="style-card">
-				<img src="C:\xampp\htdocs\BarberShopWebsite\Dizajn-ZhvillimWeb\images\image5.jpg" alt="Taper Fade">
+				<img src="../images/image5.jpg" alt="Taper Fade">
 				<h3>Taper Fade</h3>
 			</div>
 		</div>

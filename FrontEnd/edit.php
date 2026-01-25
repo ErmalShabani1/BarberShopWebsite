@@ -10,9 +10,9 @@
     <!-- Header Section -->
     <header class="main-header">
         <div class="header-content">
-            <img src="C:\xampp\htdocs\BarberShopWebsite\Dizajn-ZhvillimWeb\images/image1.jpg" class="logo" alt="Barbershop Logo">
+            <img src="../images/image1.jpg" class="logo" alt="Barbershop Logo">
             <h1 class="brand-title">BARBERSHOP</h1>
-            <img src="C:\xampp\htdocs\BarberShopWebsite\Dizajn-ZhvillimWeb\images/image1.jpg" class="logo" alt="Barbershop Logo">
+            <img src="../images/image1.jpg" class="logo" alt="Barbershop Logo">
         </div>
     </header>
 
