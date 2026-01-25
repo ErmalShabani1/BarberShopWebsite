@@ -5,11 +5,11 @@
     box-sizing: border-box;
 }
 
-/* Body */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    line-height: 1.6;
     color: #333;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     min-height: 100vh;
 }
 
@@ -49,13 +49,6 @@ body {
     z-index: 1;
 }
 
-.header-content h1 {
-    color: #d4af37;
-    font-size: 2rem;
-    font-weight: bold;
-    text-align: center;
-}
-
 .logo {
     width: 5%;
     height: auto;
@@ -80,6 +73,17 @@ body {
     font-weight: bold;
     letter-spacing: 0.5%;
     text-shadow: 0.3% 0.3% 0.6% rgba(0,0,0,0.5);
+    position: relative;
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0.3% 0.3% 0.6% rgba(212, 175, 55, 0.5), 0 0 1% rgba(212, 175, 55, 0.5);
+    }
+    to {
+        text-shadow: 0.3% 0.3% 1% rgba(212, 175, 55, 0.8), 0 0 2% rgba(212, 175, 55, 0.8);
+    }
 }
 
 .main-nav {
