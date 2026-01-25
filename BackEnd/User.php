@@ -31,12 +31,9 @@ class User {
         }
         $stmt->close();
 
-        // Hash password
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-        // Insert new user
+        // Insert new user (no password hashing)
         $stmt = $this->conn->prepare("INSERT INTO users (username, email, password, full_name, phone) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssss", $username, $email, $hashedPassword, $fullName, $phone);
+        $stmt->bind_param("sssss", $username, $email, $password, $fullName, $phone);
         
         if ($stmt->execute()) {
             $stmt->close();
@@ -56,7 +53,8 @@ class User {
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
             
-            if (password_verify($password, $user['password'])) {
+            // Direct password comparison (no hashing)
+            if ($password === $user['password']) {
                 // Start session and store user data
                 if (session_status() === PHP_SESSION_NONE) {
                     session_start();

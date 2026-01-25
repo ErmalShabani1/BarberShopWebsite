@@ -1,3 +1,58 @@
+console.log('Booking.js loaded');
+
+// ===== LOGIN MODAL FUNCTIONS =====
+function openLoginModal() {
+    console.log('openLoginModal called');
+    const modal = document.getElementById('login-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        console.log('Modal opened');
+    } else {
+        console.error('Modal not found');
+    }
+    showLoginForm();
+}
+
+function closeLoginModal() {
+    const modal = document.getElementById('login-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    clearModalForms();
+    
+    // Show error message if user closes without logging in
+    if (!window.authSystem || !window.authSystem.isLoggedIn()) {
+        showLoginRequiredMessage();
+    }
+}
+
+function showLoginForm() {
+    const loginContainer = document.getElementById('login-form-container');
+    const registerContainer = document.getElementById('register-form-container');
+    if (loginContainer) loginContainer.style.display = 'block';
+    if (registerContainer) registerContainer.style.display = 'none';
+}
+
+function showRegisterForm() {
+    const loginContainer = document.getElementById('login-form-container');
+    const registerContainer = document.getElementById('register-form-container');
+    if (loginContainer) loginContainer.style.display = 'none';
+    if (registerContainer) registerContainer.style.display = 'block';
+}
+
+function clearModalForms() {
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    if (loginForm) loginForm.reset();
+    if (registerForm) registerForm.reset();
+    
+    const errorMessages = document.querySelectorAll('.modal-error-message');
+    const successMessages = document.querySelectorAll('.modal-success-message');
+    errorMessages.forEach(msg => msg.style.display = 'none');
+    successMessages.forEach(msg => msg.style.display = 'none');
+}
+
+// ===== BOOKING SYSTEM =====
 // Booking Sistem
 class BookingSystem {
     constructor() {
@@ -164,8 +219,8 @@ class BookingSystem {
 
     async submitBooking() {
         // Check if user is logged in
-        if (!auth.isLoggedIn()) {
-            showLoginModal();
+        if (!window.authSystem || !window.authSystem.isLoggedIn()) {
+            openLoginModal();
             return;
         }
 
@@ -236,180 +291,49 @@ function submitBooking() {
     bookingSystem.submitBooking();
 }
 
-// Login Modal Functions
-function showLoginModal() {
-    document.getElementById('login-modal').classList.add('show');
-}
-
-function closeLoginModal() {
-    document.getElementById('login-modal').classList.remove('show');
-}
-
-// Close modal when clicking outside of it
-window.onclick = function(event) {
+// Close modal when clicking outside
+window.addEventListener('click', (e) => {
     const modal = document.getElementById('login-modal');
-    if (event.target === modal) {
+    if (e.target === modal) {
         closeLoginModal();
-    }
-}
-
-// Authentication UI Handler Class
-class AuthUI {
-    constructor(authSystem) {
-        this.authSystem = authSystem;
-        this.init();
-    }
-
-    init() {
-        this.setupLoginForm();
-        this.setupRegisterForm();
-        this.checkLoginStatus();
-    }
-
-    setupLoginForm() {
-        const loginForm = document.getElementById('login-form');
-        if (loginForm) {
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                await this.handleLogin();
-            });
+        // Show error message if user closes without logging in
+        if (!window.authSystem || !window.authSystem.isLoggedIn()) {
+            showLoginRequiredMessage();
         }
-    }
-
-    async handleLogin() {
-        const username = document.getElementById('modal-username').value;
-        const password = document.getElementById('modal-password').value;
-        const errorMsg = document.getElementById('modal-error-message');
-        const successMsg = document.getElementById('modal-success-message');
-        
-        this.clearMessages(errorMsg, successMsg);
-        
-        if (!this.authSystem) {
-            this.showError(errorMsg, 'Authentication system not loaded');
-            return;
-        }
-
-        const result = await this.authSystem.login(username, password);
-        
-        if (result.success) {
-            this.showSuccess(successMsg, 'Login successful!');
-            setTimeout(() => {
-                closeLoginModal();
-                window.location.reload();
-            }, 1000);
-        } else {
-            this.showError(errorMsg, result.message);
-        }
-    }
-
-    setupRegisterForm() {
-        const registerForm = document.getElementById('register-form');
-        if (registerForm) {
-            registerForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                await this.handleRegister();
-            });
-        }
-    }
-
-    async handleRegister() {
-        const username = document.getElementById('register-username').value;
-        const email = document.getElementById('register-email').value;
-        const password = document.getElementById('register-password').value;
-        const confirmPassword = document.getElementById('register-confirm-password').value;
-        const fullName = document.getElementById('register-fullname')?.value || username;
-        const phone = document.getElementById('register-phone')?.value || null;
-        
-        const errorMsg = document.getElementById('register-error-message');
-        const successMsg = document.getElementById('register-success-message');
-        
-        this.clearMessages(errorMsg, successMsg);
-        
-        // Validate passwords match
-        if (password !== confirmPassword) {
-            this.showError(errorMsg, 'Passwords do not match!');
-            return;
-        }
-        
-        // Validate password length
-        if (password.length < 6) {
-            this.showError(errorMsg, 'Password must be at least 6 characters!');
-            return;
-        }
-        
-        if (!this.authSystem) {
-            this.showError(errorMsg, 'Authentication system not loaded');
-            return;
-        }
-
-        const result = await this.authSystem.register(username, email, password, fullName, phone);
-        
-        if (result.success) {
-            this.showSuccess(successMsg, 'Registration successful! You can now login.');
-            setTimeout(() => {
-                showLoginForm();
-                document.getElementById('modal-username').value = username;
-            }, 2000);
-        } else {
-            this.showError(errorMsg, result.message || 'Registration failed');
-        }
-    }
-
-    checkLoginStatus() {
-        if (!this.authSystem || !this.authSystem.isLoggedIn()) {
-            const errorMsgElement = document.getElementById('error-message');
-            if (errorMsgElement) {
-                errorMsgElement.textContent = 'Please login to book an appointment.';
-                errorMsgElement.style.display = 'block';
-            }
-            const submitBtn = document.getElementById('submit-booking');
-            if (submitBtn) {
-                submitBtn.disabled = true;
-            }
-        }
-    }
-
-    clearMessages(errorMsg, successMsg) {
-        if (errorMsg) {
-            errorMsg.textContent = '';
-            errorMsg.style.display = 'none';
-        }
-        if (successMsg) {
-            successMsg.textContent = '';
-            successMsg.style.display = 'none';
-        }
-    }
-
-    showError(errorMsg, message) {
-        if (errorMsg) {
-            errorMsg.textContent = message;
-            errorMsg.style.display = 'block';
-        }
-    }
-
-    showSuccess(successMsg, message) {
-        if (successMsg) {
-            successMsg.textContent = message;
-            successMsg.style.display = 'block';
-        }
-    }
-}
-
-// Initialize Auth UI when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.authSystem) {
-        const authUI = new AuthUI(window.authSystem);
-        window.authUI = authUI; // Make it globally accessible if needed
     }
 });
 
-// Toggle between login and register forms
-function showLoginForm() {
-    document.getElementById('login-form-container').style.display = 'block';
-    document.getElementById('register-form-container').style.display = 'none';
+function showLoginRequiredMessage() {
+    const errorMsg = document.getElementById('error-message');
+    if (errorMsg) {
+        errorMsg.textContent = 'Please login to book an appointment.';
+        errorMsg.style.display = 'block';
+    }
+    const submitBtn = document.getElementById('submit-booking');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+    }
 }
 
-function showRegisterForm() {
-    document.getElementById('login-form-container').style.display = 'none';
-    document.getElementById('register-form-container').style.display = 'block';
-}
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Booking page ready');
+    
+    // Wait for auth system to be ready
+    setTimeout(() => {
+        if (window.authSystem && window.authSystem.isLoggedIn()) {
+            // User is logged in - don't show popup, enable booking
+            console.log('User is logged in');
+            const submitBtn = document.getElementById('submit-booking');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+            }
+        } else {
+            // User is NOT logged in - show popup automatically
+            console.log('User not logged in - showing popup');
+            openLoginModal();
+        }
+    }, 200);
+});
+
+

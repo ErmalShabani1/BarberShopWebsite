@@ -3,27 +3,39 @@ class EditBookingSystem {
     constructor() {
         this.bookings = this.loadBookings();
         this.services = this.loadServices();
-        this.init();
     }
 
-    init() {
+    async init() {
+        console.log('EditBookingSystem init called');
+        console.log('window.authSystem:', window.authSystem);
+        
         // Check if user is logged in and has permission
-        if (!auth.isLoggedIn()) {
-            window.location.href = 'login.html';
+        if (!window.authSystem || !window.authSystem.isLoggedIn()) {
+            console.log('User not logged in');
+            const errorMsg = document.getElementById('error-message');
+            if (errorMsg) {
+                errorMsg.textContent = 'Please login to access this page.';
+                errorMsg.style.display = 'block';
+            }
             return;
         }
 
+        console.log('User is logged in:', window.authSystem.getCurrentUser());
+
         // Show appropriate panel based on user role
-        if (auth.isAdmin()) {
-            this.showAdminPanel();
-        } else if (auth.isBarber()) {
-            this.showBarberPanel();
-        } else if (auth.isUser()) {
+        if (window.authSystem.isAdmin()) {
+            console.log('Showing admin panel');
+            await this.showAdminPanel();
+        } else if (window.authSystem.isBarber()) {
+            console.log('Showing barber panel');
+            await this.showBarberPanel();
+        } else {
+            console.log('Showing user panel');
             this.showUserPanel();
         }
 
         // Setup add service form for barbers
-        if (auth.isBarber()) {
+        if (window.authSystem.isBarber()) {
             this.setupAddServiceForm();
         }
     }
@@ -49,16 +61,16 @@ class EditBookingSystem {
         localStorage.setItem('services', JSON.stringify(this.services));
     }
 
-    showAdminPanel() {
+    async showAdminPanel() {
         document.getElementById('admin-panel').classList.add('active');
         this.renderAdminBookings();
-        this.renderAdminUsers();
+        await this.renderAdminUsers();
     }
 
-    showBarberPanel() {
+    async showBarberPanel() {
         document.getElementById('barber-panel').classList.add('active');
         this.renderBarberBookings();
-        this.renderBarberUsers();
+        await this.renderBarberUsers();
     }
 
     showUserPanel() {
@@ -126,7 +138,7 @@ class EditBookingSystem {
 
     renderBarberBookings() {
         const container = document.getElementById('barber-bookings');
-        const barberName = auth.currentUser.fullName;
+        const barberName = window.authSystem.getCurrentUser().fullName;
         
         // Filter bookings for current barber (for demo, show all)
         const barberBookings = this.bookings;
@@ -184,7 +196,7 @@ class EditBookingSystem {
 
     renderUserBookings() {
         const container = document.getElementById('user-bookings');
-        const userBookings = this.bookings.filter(b => b.customer.username === auth.currentUser.username);
+        const userBookings = this.bookings.filter(b => b.customer.username === window.authSystem.getCurrentUser().username);
 
         if (userBookings.length === 0) {
             container.innerHTML = `
@@ -281,9 +293,15 @@ class EditBookingSystem {
     }
 
     // User Management Methods
-    renderAdminUsers() {
+    async renderAdminUsers() {
         const container = document.getElementById('admin-users');
-        const allUsers = auth.getAllUsers();
+        
+        if (!window.authSystem) {
+            container.innerHTML = '<p>Loading...</p>';
+            return;
+        }
+        
+        const allUsers = await window.authSystem.getAllUsers();
 
         if (allUsers.length === 0) {
             container.innerHTML = `
@@ -333,9 +351,15 @@ class EditBookingSystem {
         container.innerHTML = tableHTML;
     }
 
-    renderBarberUsers() {
+    async renderBarberUsers() {
         const container = document.getElementById('barber-users');
-        const allUsers = auth.getAllUsers();
+        
+        if (!window.authSystem) {
+            container.innerHTML = '<p>Loading...</p>';
+            return;
+        }
+        
+        const allUsers = await window.authSystem.getAllUsers();
 
         if (allUsers.length === 0) {
             container.innerHTML = `
@@ -397,5 +421,26 @@ class EditBookingSystem {
     }
 }
 
-// Initialize edit system
-const editSystem = new EditBookingSystem();
+// Initialize edit system after DOM and auth are ready
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded for edit page');
+    
+    // Wait for authSystem to be ready
+    let attempts = 0;
+    const checkAuth = setInterval(async () => {
+        attempts++;
+        console.log('Checking for authSystem, attempt:', attempts);
+        
+        if (window.authSystem) {
+            console.log('AuthSystem found, initializing EditBookingSystem');
+            clearInterval(checkAuth);
+            const editSystem = new EditBookingSystem();
+            window.editSystem = editSystem; // Make globally accessible
+            await editSystem.init();
+        } else if (attempts > 20) {
+            console.error('AuthSystem not loaded after 20 attempts');
+            clearInterval(checkAuth);
+            alert('Authentication system failed to load. Please refresh the page.');
+        }
+    }, 100);
+});

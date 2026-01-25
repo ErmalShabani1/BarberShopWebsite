@@ -24,11 +24,11 @@
             <li><a href="View.php" class="nav-link">View Barbers</a></li>
             <li><a href="kontakti.php" class="nav-link">Contact</a></li>
             <li><a href="edit.php" class="nav-link">Edit / Cancel</a></li>
-            <li><button id="auth-btn" class="nav-link auth-btn" onclick="openLoginModal()">Login</button></li>
+            <li><button type="button" id="auth-btn" class="nav-link auth-btn" onclick="openLoginModal()">Login</button></li>
         </ul>
     </nav>
 
-    <!-- modaliteti loginit -->
+    <!-- pjesa e kyqjes login -->
     <div id="login-modal" class="login-modal">
         <div class="login-modal-content">
             <button class="close-modal" onclick="closeLoginModal()">&times;</button>
@@ -39,11 +39,11 @@
                 <form id="login-form">
                     <div class="login-form-group">
                         <label for="modal-username">Username</label>
-                        <input type="text" id="modal-username" name="username" required>
+                        <input type="text" id="modal-username" name="username" autocomplete="username" required>
                     </div>
                     <div class="login-form-group">
                         <label for="modal-password">Password</label>
-                        <input type="password" id="modal-password" name="password" required>
+                        <input type="password" id="modal-password" name="password" autocomplete="current-password" required>
                     </div>
                     <button type="submit" class="login-btn">Login</button>
                     <div class="modal-error-message" id="modal-error-message"></div>
@@ -66,19 +66,19 @@
                 <form id="register-form">
                     <div class="login-form-group">
                         <label for="register-username">Username</label>
-                        <input type="text" id="register-username" name="username" required>
+                        <input type="text" id="register-username" name="username" autocomplete="username" required>
                     </div>
                     <div class="login-form-group">
                         <label for="register-email">Email</label>
-                        <input type="email" id="register-email" name="email" required>
+                        <input type="email" id="register-email" name="email" autocomplete="email" required>
                     </div>
                     <div class="login-form-group">
                         <label for="register-password">Password</label>
-                        <input type="password" id="register-password" name="password" required>
+                        <input type="password" id="register-password" name="password" autocomplete="new-password" required>
                     </div>
                     <div class="login-form-group">
                         <label for="register-confirm-password">Confirm Password</label>
-                        <input type="password" id="register-confirm-password" name="confirm-password" required>
+                        <input type="password" id="register-confirm-password" name="confirm-password" autocomplete="new-password" required>
                     </div>
                     <button type="submit" class="login-btn">Register</button>
                     <div class="modal-error-message" id="register-error-message"></div>
@@ -211,6 +211,6 @@
     </footer>
 
     <script src="login.js"></script>
-    <script src="booking.js"></script>
+    <script src="Booking.js"></script>
 </body>
 </html>

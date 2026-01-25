@@ -168,6 +168,17 @@ class AuthSystem {
             }
         }
     }
+
+    async getAllUsers() {
+        try {
+            const response = await fetch('../BackEnd/get_users.php');
+            const result = await response.json();
+            return result.success ? result.users : [];
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            return [];
+        }
+    }
 }
 
 // Initialize auth system
@@ -180,39 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
         auth.updateNavigation();
     }, 100);
 });
-
-// Login Modal Functions
-function openLoginModal() {
-    document.getElementById('login-modal').style.display = 'flex';
-    showLoginForm();
-}
-
-function closeLoginModal() {
-    document.getElementById('login-modal').style.display = 'none';
-    clearForms();
-}
-
-function showLoginForm() {
-    document.getElementById('login-form-container').style.display = 'block';
-    document.getElementById('register-form-container').style.display = 'none';
-}
-
-function showRegisterForm() {
-    document.getElementById('login-form-container').style.display = 'none';
-    document.getElementById('register-form-container').style.display = 'block';
-}
-
-function clearForms() {
-    const loginForm = document.getElementById('login-form');
-    const registerForm = document.getElementById('register-form');
-    if (loginForm) loginForm.reset();
-    if (registerForm) registerForm.reset();
-    
-    const errorMessages = document.querySelectorAll('.modal-error-message');
-    const successMessages = document.querySelectorAll('.modal-success-message');
-    errorMessages.forEach(msg => msg.style.display = 'none');
-    successMessages.forEach(msg => msg.style.display = 'none');
-}
 
 // Login form submission
 document.addEventListener('DOMContentLoaded', () => {
@@ -234,7 +212,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 errorMsg.style.display = 'none';
                 
                 setTimeout(() => {
-                    closeLoginModal();
+                    if (typeof closeLoginModal === 'function') {
+                        closeLoginModal();
+                    }
                     window.location.reload();
                 }, 1000);
             } else {
@@ -251,14 +231,14 @@ document.addEventListener('DOMContentLoaded', () => {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const username = document.getElementById('reg-username').value;
-            const email = document.getElementById('reg-email').value;
-            const password = document.getElementById('reg-password').value;
-            const confirmPassword = document.getElementById('reg-confirm-password').value;
-            const fullName = document.getElementById('reg-fullname').value;
-            const phone = document.getElementById('reg-phone').value;
-            const errorMsg = document.getElementById('reg-error-message');
-            const successMsg = document.getElementById('reg-success-message');
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            const fullName = username; // Use username as fullName for now
+            const phone = ''; // Optional field
+            const errorMsg = document.getElementById('register-error-message');
+            const successMsg = document.getElementById('register-success-message');
             
             if (password !== confirmPassword) {
                 errorMsg.textContent = 'Passwords do not match';
@@ -275,7 +255,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 errorMsg.style.display = 'none';
                 
                 setTimeout(() => {
-                    showLoginForm();
+                    if (typeof showLoginForm === 'function') {
+                        showLoginForm();
+                    }
                     registerForm.reset();
                 }, 2000);
             } else {
@@ -284,13 +266,5 @@ document.addEventListener('DOMContentLoaded', () => {
                 successMsg.style.display = 'none';
             }
         });
-    }
-});
-
-// Close modal when clicking outside
-window.addEventListener('click', (e) => {
-    const modal = document.getElementById('login-modal');
-    if (e.target === modal) {
-        closeLoginModal();
     }
 });
