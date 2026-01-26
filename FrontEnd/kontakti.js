@@ -1,13 +1,10 @@
 function handleContactForm(event) {
     event.preventDefault();
-    
-    // Check if user is logged in
-   function handleContactForm(event) {
-    event.preventDefault();
+
 
     const formData = new FormData(event.target);
 
-    fetch('send_message.php', {
+    fetch('../BackEnd/send_message.php', {
         method: 'POST',
         body: formData
     })
@@ -15,21 +12,25 @@ function handleContactForm(event) {
         if (res.status === 401) {
             alert('Please login to send a message.');
             openLoginModal();
-            return;
+            return null;
+        }
+        if (!res.ok) {
+            throw new Error('Failed to send message');
         }
         return res.text();
     })
     .then(data => {
         if (data === 'success') {
-            alert('Message sent successfully!');
+            alert('Thank you for your message! We will get back to you soon.');
             event.target.reset();
+        } else if (data) {
+            alert('Error: ' + data);
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to send message. Please try again.');
     });
-}
-
-    
-    alert('Thank you for your message! We will get back to you soon.');
-    event.target.reset();
 }
 
 // Modal Functions
