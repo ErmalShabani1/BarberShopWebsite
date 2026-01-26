@@ -2,11 +2,31 @@ function handleContactForm(event) {
     event.preventDefault();
     
     // Check if user is logged in
-    if (typeof auth === 'undefined' || !auth.isLoggedIn()) {
-        alert('Please login to send a message.');
-        openLoginModal();
-        return;
-    }
+   function handleContactForm(event) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+
+    fetch('send_message.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => {
+        if (res.status === 401) {
+            alert('Please login to send a message.');
+            openLoginModal();
+            return;
+        }
+        return res.text();
+    })
+    .then(data => {
+        if (data === 'success') {
+            alert('Message sent successfully!');
+            event.target.reset();
+        }
+    });
+}
+
     
     alert('Thank you for your message! We will get back to you soon.');
     event.target.reset();
