@@ -65,6 +65,21 @@ class DatabaseSetup {
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
 
+        // Services table
+        $servicesTable = "CREATE TABLE IF NOT EXISTS services (
+            id INT(11) AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            description TEXT,
+            price DECIMAL(10, 2),
+            duration INT(11) COMMENT 'Duration in minutes',
+            icon VARCHAR(255) COMMENT 'Icon class or image path',
+            image_url VARCHAR(255),
+            display_order INT(11) DEFAULT 0,
+            is_active BOOLEAN DEFAULT TRUE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+
         // Execute table creation
         if ($this->conn->query($usersTable) === TRUE) {
             echo "✓ Users table created<br>";
@@ -80,6 +95,12 @@ class DatabaseSetup {
 
         if ($this->conn->query($messagesTable) === TRUE) {
             echo "✓ Messages table created<br>";
+        } else {
+            echo "Error: " . $this->conn->error . "<br>";
+        }
+
+        if ($this->conn->query($servicesTable) === TRUE) {
+            echo "✓ Services table created<br>";
         } else {
             echo "Error: " . $this->conn->error . "<br>";
         }
