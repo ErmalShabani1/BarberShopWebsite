@@ -1,12 +1,19 @@
 function handleContactForm(event) {
     event.preventDefault();
 
+    // Check if user is logged in before sending
+    if (typeof auth !== 'undefined' && !auth.isLoggedIn()) {
+        alert('Please login to send a message.');
+        openLoginModal();
+        return;
+    }
 
     const formData = new FormData(event.target);
 
     fetch('../BackEnd/send_message.php', {
         method: 'POST',
-        body: formData
+        body: formData,
+        credentials: 'include'
     })
     .then(res => {
         if (res.status === 401) {
@@ -15,15 +22,17 @@ function handleContactForm(event) {
             return null;
         }
         if (!res.ok) {
-            throw new Error('Failed to send message');
+            throw new Error('Failed to send message (Status: ' + res.status + ')');
         }
         return res.text();
     })
     .then(data => {
+        if (!data) return;
         if (data === 'success') {
             alert('Thank you for your message! We will get back to you soon.');
             event.target.reset();
-        } else if (data) {
+        } else {
+            console.error('Error response:', data);
             alert('Error: ' + data);
         }
     })
@@ -61,37 +70,43 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitBtn = contactForm ? contactForm.querySelector('.submit-btn') : null;
     
     function checkLoginStatus() {
-        if (typeof auth !== 'undefined' && contactForm) {
-            if (!auth.isLoggedIn()) {
-                // Disable form inputs
-                const inputs = contactForm.querySelectorAll('input, textarea');
-                inputs.forEach(input => {
-                    input.disabled = true;
-                    input.placeholder = 'Please login to use contact form';
-                });
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.textContent = 'Login Required';
-                    submitBtn.style.cursor = 'not-allowed';
-                }
-            } else {
-                // Enable form inputs
-                const inputs = contactForm.querySelectorAll('input, textarea');
-                inputs.forEach(input => {
-                    input.disabled = false;
-                    input.placeholder = '';
-                });
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Send Message';
-                    submitBtn.style.cursor = 'pointer';
-                }
+        // Wait for auth to be defined and check session
+        if (typeof auth === 'undefined') {
+            setTimeout(checkLoginStatus, 100);
+            return;
+        }
+        
+        if (!contactForm) return;
+        
+        if (!auth.isLoggedIn()) {
+            // Disable form inputs
+            const inputs = contactForm.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.disabled = true;
+                input.placeholder = 'Please login to use contact form';
+            });
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Login Required';
+                submitBtn.style.cursor = 'not-allowed';
+            }
+        } else {
+            // Enable form inputs
+            const inputs = contactForm.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.disabled = false;
+                input.placeholder = '';
+            });
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Message';
+                submitBtn.style.cursor = 'pointer';
             }
         }
     }
     
-    // Check on page load
-    checkLoginStatus();
+    // Check after a delay to allow auth to initialize session
+    setTimeout(checkLoginStatus, 500);
     
     // Re-check after login modal closes
     const originalCloseModal = window.closeLoginModal;
@@ -103,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle Login Form
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const username = document.getElementById('modal-username').value;
@@ -124,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            const result = auth.login(username, password);
+            const result = await auth.login(username, password);
             
             if (result.success) {
                 successMsg.textContent = 'Login successful!';
@@ -145,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle Register Form
     const registerForm = document.getElementById('register-form');
     if (registerForm) {
-        registerForm.addEventListener('submit', function(e) {
+        registerForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const username = document.getElementById('register-username').value;
@@ -176,35 +191,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Store user in localStorage (in real app, this would be a backend call)
-            const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            // Use auth system to register
+            const result = await auth.register(username, email, password, username);
             
-            // Check if username already exists
-            if (users.find(u => u.username === username)) {
-                errorMsg.textContent = 'Username already exists!';
+            if (result.success) {
+                successMsg.textContent = 'Registration successful! Please login.';
+                successMsg.style.display = 'block';
+                
+                setTimeout(() => {
+                    showLoginForm();
+                    registerForm.reset();
+                }, 2000);
+            } else {
+                errorMsg.textContent = result.message;
                 errorMsg.style.display = 'block';
-                return;
             }
-            
-            // Add new user
-            users.push({
-                username: username,
-                email: email,
-                password: password,
-                role: 'user'
-            });
-            
-            localStorage.setItem('registeredUsers', JSON.stringify(users));
-            
-            successMsg.textContent = 'Registration successful! You can now login.';
-            successMsg.style.display = 'block';
-            
-            // Switch to login form after 2 seconds
-            setTimeout(() => {
-                showLoginForm();
-                document.getElementById('modal-username').value = username;
-            }, 2000);
         });
     }
 });
-
