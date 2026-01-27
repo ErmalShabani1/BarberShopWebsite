@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     switch ($action) {
         case 'getAll':
             // Get all active services ordered by display_order
-            $stmt = $conn->prepare("SELECT id, name, description, price, duration, icon, image_url, display_order FROM services WHERE is_active = TRUE ORDER BY display_order ASC");
+            $stmt = $conn->prepare("SELECT id, name, description, price, duration, display_order FROM services WHERE is_active = TRUE ORDER BY display_order ASC");
             $stmt->execute();
             $result = $stmt->get_result();
             $services = array();
@@ -58,15 +58,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $response['message'] = 'Invalid action';
     }
 } 
-// Handle POST requests - add, edit, delete services (admin only)
+// Handle POST requests - add, edit, delete services (admin or barber)
 elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Check if user is logged in and is admin
+    // Check if user is logged in and is admin or barber
     $user = new User();
     $userResult = $user->getCurrentUser();
     
-    if (!$userResult['success'] || $userResult['user']['role'] !== 'admin') {
+    if (!$userResult['success'] || !in_array($userResult['user']['role'], ['admin', 'barber'])) {
         http_response_code(403);
-        $response['message'] = 'Unauthorized. Admin access required.';
+        $response['message'] = 'Unauthorized. Admin or Barber access required.';
         echo json_encode($response);
         exit();
     }
@@ -78,8 +78,6 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $description = isset($_POST['description']) ? trim($_POST['description']) : '';
             $price = isset($_POST['price']) ? floatval($_POST['price']) : null;
             $duration = isset($_POST['duration']) ? intval($_POST['duration']) : null;
-            $icon = isset($_POST['icon']) ? trim($_POST['icon']) : '';
-            $image_url = isset($_POST['image_url']) ? trim($_POST['image_url']) : '';
             $display_order = isset($_POST['display_order']) ? intval($_POST['display_order']) : 0;
             
             if (empty($name)) {
@@ -87,8 +85,8 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
             }
             
-            $stmt = $conn->prepare("INSERT INTO services (name, description, price, duration, icon, image_url, display_order) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssdiiss", $name, $description, $price, $duration, $icon, $image_url, $display_order);
+            $stmt = $conn->prepare("INSERT INTO services (name, description, price, duration, display_order) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssdii", $name, $description, $price, $duration, $display_order);
             
             if ($stmt->execute()) {
                 $response['success'] = true;
@@ -108,8 +106,6 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $description = isset($_POST['description']) ? trim($_POST['description']) : '';
             $price = isset($_POST['price']) ? floatval($_POST['price']) : null;
             $duration = isset($_POST['duration']) ? intval($_POST['duration']) : null;
-            $icon = isset($_POST['icon']) ? trim($_POST['icon']) : '';
-            $image_url = isset($_POST['image_url']) ? trim($_POST['image_url']) : '';
             $display_order = isset($_POST['display_order']) ? intval($_POST['display_order']) : 0;
             
             if ($id === 0 || empty($name)) {
@@ -117,8 +113,8 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
             }
             
-            $stmt = $conn->prepare("UPDATE services SET name = ?, description = ?, price = ?, duration = ?, icon = ?, image_url = ?, display_order = ? WHERE id = ?");
-            $stmt->bind_param("ssdiissi", $name, $description, $price, $duration, $icon, $image_url, $display_order, $id);
+            $stmt = $conn->prepare("UPDATE services SET name = ?, description = ?, price = ?, duration = ?, display_order = ? WHERE id = ?");
+            $stmt->bind_param("ssdiii", $name, $description, $price, $duration, $display_order, $id);
             
             if ($stmt->execute()) {
                 $response['success'] = true;

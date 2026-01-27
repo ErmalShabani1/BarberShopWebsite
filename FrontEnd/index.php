@@ -39,54 +39,16 @@
 	<!-- Services Overview Section -->
 	<section class="services-overview">
 		<h2 class="section-title">Our Styles</h2>
-		<div class="styles-grid">
-			<div class="style-card">
-				<img src="../images/image3.jpg" alt="High Fade">
-				<h3>High Fade</h3>
-			</div>
-			<div class="style-card">
-				<img src="../images/image2.jpg" alt="Low Fade">
-				<h3>Low Fade</h3>
-			</div>
-			<div class="style-card">
-				<img src="../images/image4.jpg" alt="Mid Fade">
-				<h3>Mid Fade</h3>
-			</div>
-			<div class="style-card">
-				<img src="../images/image5.jpg" alt="Taper Fade">
-				<h3>Taper Fade</h3>
-			</div>
+		<div class="styles-grid" id="styles-grid">
+			<!-- Styles will be loaded dynamically from database -->
 		</div>
 	</section>
 
 	<!-- Services Detail Section -->
 	<section class="services-detail">
 		<h2 class="section-title">Services & Pricing</h2>
-		<div class="service-cards">
-			<div class="service-card">
-				<h3>High Fade</h3>
-				<p class="price">$20</p>
-				<p class="description">A stylish and modern haircut with gradual tapering from the top down to the sides and back. The fade starts high on the head, creating a sharp contrast.</p>
-				<p class="duration">⏱ 30 minutes</p>
-			</div>
-			<div class="service-card">
-				<h3>Low Fade</h3>
-				<p class="price">$15</p>
-				<p class="description">Features a gradual tapering starting low on the head, around the ears. Creates a subtle contrast with a clean and polished look.</p>
-				<p class="duration">⏱ 25 minutes</p>
-			</div>
-			<div class="service-card">
-				<h3>Mid Fade</h3>
-				<p class="price">$17</p>
-				<p class="description">The perfect balance between high and low fade. Starts at the middle of the head for a versatile, modern appearance.</p>
-				<p class="duration">⏱ 25 minutes</p>
-			</div>
-			<div class="service-card">
-				<h3>Taper Fade</h3>
-				<p class="price">$18</p>
-				<p class="description">A classic cut with gradual length transition. Perfect for those who want a professional and timeless look.</p>
-				<p class="duration">⏱ 28 minutes</p>
-			</div>
+		<div class="service-cards" id="service-cards">
+			<!-- Services will be loaded dynamically from database -->
 		</div>
 	</section>
 
@@ -106,5 +68,49 @@
 	</footer>
 
 	<script src="login.js"></script>
+	<script>
+		// Load services from database
+		async function loadServices() {
+			try {
+				const response = await fetch('../BackEnd/services.php?action=getAll');
+				const data = await response.json();
+				
+				if (data.success && data.services) {
+					displayServicesOverview(data.services);
+					displayServicesDetail(data.services);
+				}
+			} catch (error) {
+				console.error('Error loading services:', error);
+			}
+		}
+
+		function displayServicesOverview(services) {
+			const container = document.getElementById('styles-grid');
+			const images = ['image3.jpg', 'image2.jpg', 'image4.jpg', 'image5.jpg'];
+			
+			container.innerHTML = services.map((service, index) => `
+				<div class="style-card">
+					<img src="../images/${images[index % images.length]}" alt="${service.name}">
+					<h3>${service.name}</h3>
+				</div>
+			`).join('');
+		}
+
+		function displayServicesDetail(services) {
+			const container = document.getElementById('service-cards');
+			
+			container.innerHTML = services.map(service => `
+				<div class="service-card">
+					<h3>${service.name}</h3>
+					<p class="price">$${parseFloat(service.price).toFixed(2)}</p>
+					<p class="description">${service.description}</p>
+					<p class="duration">⏱ ${service.duration} minutes</p>
+				</div>
+			`).join('');
+		}
+
+		// Load services when page loads
+		document.addEventListener('DOMContentLoaded', loadServices);
+	</script>
 </body>
 </html>

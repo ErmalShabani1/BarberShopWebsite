@@ -430,6 +430,36 @@ body {
     box-shadow: 0 4px 12px rgba(212, 175, 55, 0.5);
 }
 
+/* Cancel Button Styling */
+.cancel-btn {
+    padding: 1.2rem 2rem;
+    background: linear-gradient(135deg, #6c757d 0%, #858e96 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    margin-top: 1rem;
+    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.cancel-btn:hover {
+    background: linear-gradient(135deg, #858e96 0%, #6c757d 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(108, 117, 125, 0.6);
+}
+
+.cancel-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.5);
+}
+
 /* User Management Dashboard */
 .user-dashboard {
     margin-top: 3rem;
@@ -509,6 +539,207 @@ body {
     cursor: not-allowed;
     opacity: 0.6;
     background: #f5f5f5;
+}
+
+/* Services Management Section */
+.services-management {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #d4af37;
+}
+
+.services-management h3 {
+    color: #d4af37;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.services-management h4 {
+    color: #333;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+}
+
+.add-service-form {
+    background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+    padding: 2rem;
+    border-radius: 10px;
+    border: 2px solid #d4af37;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+}
+
+.add-service-form h4 {
+    color: #d4af37;
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+    text-align: center;
+}
+
+.add-service-form .form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.2rem;
+    margin-bottom: 1.2rem;
+}
+
+.add-service-form .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-service-form .form-group label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+    font-size: 0.95rem;
+}
+
+.add-service-form .form-group input,
+.add-service-form .form-group textarea,
+.add-service-form .form-group select {
+    padding: 0.8rem;
+    border: 2px solid #ddd;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.add-service-form .form-group input:focus,
+.add-service-form .form-group textarea:focus,
+.add-service-form .form-group select:focus {
+    outline: none;
+    border-color: #d4af37;
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+.add-service-form .form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.services-list-section {
+    margin-top: 2rem;
+}
+
+.service-item {
+    background: linear-gradient(135deg, #f9f9f9 0%, #fff 100%);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.service-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    border-color: #d4af37;
+}
+
+.service-info {
+    flex: 1;
+}
+
+.service-name {
+    font-weight: bold;
+    color: #d4af37;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.service-details {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+.service-details p {
+    margin: 0.3rem 0;
+}
+
+.service-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin-left: 1.5rem;
+}
+
+.btn-edit, .btn-delete {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.btn-edit {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    color: white;
+}
+
+.btn-edit:hover {
+    background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(23, 162, 184, 0.4);
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+}
+
+.btn-delete:hover {
+    background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4);
+}
+
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #d4af37;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    .service-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .service-actions {
+        margin-left: 0;
+        margin-top: 1rem;
+        width: 100%;
+    }
+
+    .btn-edit, .btn-delete {
+        flex: 1;
+    }
 }
 
 /* Responsive Design */

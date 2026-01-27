@@ -70,12 +70,7 @@ class BookingSystem {
             { id: 4, name: 'Chris Wilson', specialty: 'Contemporary Hair Styling Expert' }
         ];
 
-        this.services = [
-            { id: 1, name: 'High Fade', price: 20, duration: 30 },
-            { id: 2, name: 'Low Fade', price: 15, duration: 25 },
-            { id: 3, name: 'Mid Fade', price: 17, duration: 25 },
-            { id: 4, name: 'Taper Fade', price: 18, duration: 28 }
-        ];
+        this.services = [];
 
         // Available time slots
         this.timeSlots = [
@@ -86,6 +81,36 @@ class BookingSystem {
 
         // Set minimum date to today
         this.setMinDate();
+        
+        // Load services from database
+        this.loadServices();
+    }
+
+    async loadServices() {
+        try {
+            const response = await fetch('../BackEnd/services.php?action=getAll');
+            const data = await response.json();
+            
+            if (data.success && data.services) {
+                this.services = data.services;
+                this.displayServices();
+            }
+        } catch (error) {
+            console.error('Error loading services:', error);
+        }
+    }
+
+    displayServices() {
+        const container = document.getElementById('service-grid');
+        if (!container) return;
+        
+        container.innerHTML = this.services.map(service => `
+            <div class="service-option" data-service-id="${service.id}" data-price="${service.price}" data-duration="${service.duration}" onclick="selectService(${service.id})">
+                <h3>${service.name}</h3>
+                <p class="price">$${parseFloat(service.price).toFixed(2)}</p>
+                <p class="duration">⏱ ${service.duration} minutes</p>
+            </div>
+        `).join('');
     }
 
     setMinDate() {
@@ -285,6 +310,10 @@ function loadTimeSlots() {
 
 function slideBarbers(direction) {
     bookingSystem.slideBarbers(direction);
+}
+
+function selectService(serviceId) {
+    bookingSystem.selectService(serviceId);
 }
 
 function submitBooking() {

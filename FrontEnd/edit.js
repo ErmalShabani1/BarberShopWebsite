@@ -26,17 +26,14 @@ class EditBookingSystem {
         if (window.authSystem.isAdmin()) {
             console.log('Showing admin panel');
             await this.showAdminPanel();
+            this.setupAdminServiceForm();
         } else if (window.authSystem.isBarber()) {
             console.log('Showing barber panel');
             await this.showBarberPanel();
+            this.setupAddServiceForm();
         } else {
             console.log('Showing user panel');
             this.showUserPanel();
-        }
-
-        // Setup add service form for barbers
-        if (window.authSystem.isBarber()) {
-            this.setupAddServiceForm();
         }
     }
 
@@ -63,6 +60,7 @@ class EditBookingSystem {
 
     async showAdminPanel() {
         document.getElementById('admin-panel').classList.add('active');
+        document.getElementById('admin-services-panel').classList.add('active');
         this.renderAdminBookings();
         await this.renderAdminUsers();
     }
@@ -271,26 +269,7 @@ class EditBookingSystem {
         }
     }
 
-    setupAddServiceForm() {
-        const form = document.getElementById('add-service-form');
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const newService = {
-                id: this.services.length + 1,
-                name: document.getElementById('service-name').value,
-                price: parseFloat(document.getElementById('service-price').value),
-                duration: parseInt(document.getElementById('service-duration').value),
-                description: document.getElementById('service-description').value
-            };
 
-            this.services.push(newService);
-            this.saveServices();
-            
-            alert('Service added successfully!');
-            form.reset();
-        });
-    }
 
     // User Management Methods
     async renderAdminUsers() {
@@ -418,6 +397,216 @@ class EditBookingSystem {
                 alert('Failed to delete user. Cannot delete admin account.');
             }
         }
+    }
+
+    // Service Management for Barbers
+    setupAddServiceForm() {
+        const form = document.getElementById('add-service-form');
+        const nameSelector = document.getElementById('service-name-selector');
+        const cancelBtn = document.getElementById('service-cancel-btn');
+        
+        // Load services from database and populate dropdown
+        this.loadServicesFromDatabase('barber');
+        
+        // Handle service selection from dropdown
+        nameSelector.addEventListener('change', (e) => {
+            const serviceId = e.target.value;
+            if (serviceId) {
+                this.loadServiceForEdit(parseInt(serviceId), 'barber');
+            } else {
+                this.resetServiceForm('barber');
+            }
+        });
+        
+        // Handle cancel button
+        cancelBtn.addEventListener('click', () => {
+            this.resetServiceForm('barber');
+        });
+        
+        // Handle form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const serviceId = document.getElementById('service-id').value;
+            const formData = new FormData();
+            
+            formData.append('name', document.getElementById('service-name').value);
+            formData.append('description', document.getElementById('service-description').value);
+            formData.append('price', document.getElementById('service-price').value);
+            formData.append('duration', document.getElementById('service-duration').value);
+            formData.append('display_order', 0);
+            
+            if (serviceId) {
+                formData.append('action', 'edit');
+                formData.append('id', serviceId);
+            } else {
+                formData.append('action', 'add');
+            }
+            
+            try {
+                const response = await fetch('../BackEnd/services.php', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(data.message);
+                    this.resetServiceForm('barber');
+                    this.loadServicesFromDatabase('barber');
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to save service');
+            }
+        });
+    }
+
+    // Service Management for Admin
+    setupAdminServiceForm() {
+        const form = document.getElementById('admin-service-form');
+        const nameSelector = document.getElementById('admin-service-name-selector');
+        const cancelBtn = document.getElementById('admin-service-cancel-btn');
+        
+        // Load services from database and populate dropdown
+        this.loadServicesFromDatabase('admin');
+        
+        // Handle service selection from dropdown
+        nameSelector.addEventListener('change', (e) => {
+            const serviceId = e.target.value;
+            if (serviceId) {
+                this.loadServiceForEdit(parseInt(serviceId), 'admin');
+            } else {
+                this.resetServiceForm('admin');
+            }
+        });
+        
+        // Handle cancel button
+        cancelBtn.addEventListener('click', () => {
+            this.resetServiceForm('admin');
+        });
+        
+        // Handle form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const serviceId = document.getElementById('admin-service-id').value;
+            const formData = new FormData();
+            
+            formData.append('name', document.getElementById('admin-service-name').value);
+            formData.append('description', document.getElementById('admin-service-description').value);
+            formData.append('price', document.getElementById('admin-service-price').value);
+            formData.append('duration', document.getElementById('admin-service-duration').value);
+            formData.append('display_order', 0);
+            
+            if (serviceId) {
+                formData.append('action', 'edit');
+                formData.append('id', serviceId);
+            } else {
+                formData.append('action', 'add');
+            }
+            
+            try {
+                const response = await fetch('../BackEnd/services.php', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(data.message);
+                    this.resetServiceForm('admin');
+                    this.loadServicesFromDatabase('admin');
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to save service');
+            }
+        });
+    }
+    
+    async loadServicesFromDatabase(panel) {
+        try {
+            const response = await fetch('../BackEnd/services.php?action=getAll');
+            const data = await response.json();
+            
+            if (data.success && data.services) {
+                this.populateServiceDropdown(data.services, panel);
+            }
+        } catch (error) {
+            console.error('Error loading services:', error);
+        }
+    }
+    
+    populateServiceDropdown(services, panel) {
+        const prefix = panel === 'admin' ? 'admin-' : '';
+        const selector = document.getElementById(`${prefix}service-name-selector`);
+        selector.innerHTML = '<option value="">-- Add New Service --</option>';
+        
+        services.forEach(service => {
+            const option = document.createElement('option');
+            option.value = service.id;
+            option.textContent = service.name;
+            selector.appendChild(option);
+        });
+    }
+    
+    async loadServiceForEdit(serviceId, panel) {
+        const prefix = panel === 'admin' ? 'admin-' : '';
+        
+        try {
+            const response = await fetch(`../BackEnd/services.php?action=getById&id=${serviceId}`);
+            const data = await response.json();
+            
+            if (data.success && data.service) {
+                const service = data.service;
+                document.getElementById(`${prefix}service-id`).value = service.id;
+                document.getElementById(`${prefix}service-name-selector`).value = service.id;
+                document.getElementById(`${prefix}service-name`).value = service.name;
+                document.getElementById(`${prefix}service-description`).value = service.description || '';
+                document.getElementById(`${prefix}service-price`).value = service.price || '';
+                document.getElementById(`${prefix}service-duration`).value = service.duration || '';
+                
+                // Update UI
+                document.getElementById(`${prefix}service-form-title`).textContent = 'Edit Service';
+                document.getElementById(`${prefix}service-submit-btn`).textContent = 'Update Service';
+                document.getElementById(`${prefix}service-cancel-btn`).style.display = 'inline-block';
+            }
+        } catch (error) {
+            console.error('Error loading service:', error);
+            alert('Failed to load service details');
+        }
+    }
+    
+    resetServiceForm(panel) {
+        const prefix = panel === 'admin' ? 'admin-' : '';
+        const formId = panel === 'admin' ? 'admin-service-form' : 'add-service-form';
+        
+        const form = document.getElementById(formId);
+        if (form) form.reset();
+        
+        const serviceId = document.getElementById(`${prefix}service-id`);
+        if (serviceId) serviceId.value = '';
+        
+        const selector = document.getElementById(`${prefix}service-name-selector`);
+        if (selector) selector.value = '';
+        
+        const title = document.getElementById(`${prefix}service-form-title`);
+        if (title) title.textContent = 'Add New Service';
+        
+        const submitBtn = document.getElementById(`${prefix}service-submit-btn`);
+        if (submitBtn) submitBtn.textContent = 'Add Service';
+        
+        const cancelBtn = document.getElementById(`${prefix}service-cancel-btn`);
+        if (cancelBtn) cancelBtn.style.display = 'none';
     }
 }
 

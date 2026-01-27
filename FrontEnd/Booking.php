@@ -134,27 +134,8 @@
         <!-- zgjedhja sherbimit -->
         <div class="booking-step">
             <h3 class="step-title">Step 2: Choose Your Service</h3>
-            <div class="service-grid">
-                <div class="service-option" data-service-id="1" data-price="20" data-duration="30" onclick="selectService(1)">
-                    <h3>High Fade</h3>
-                    <p class="price">$20</p>
-                    <p class="duration">⏱ 30 minutes</p>
-                </div>
-                <div class="service-option" data-service-id="2" data-price="15" data-duration="25" onclick="selectService(2)">
-                    <h3>Low Fade</h3>
-                    <p class="price">$15</p>
-                    <p class="duration">⏱ 25 minutes</p>
-                </div>
-                <div class="service-option" data-service-id="3" data-price="17" data-duration="25" onclick="selectService(3)">
-                    <h3>Mid Fade</h3>
-                    <p class="price">$17</p>
-                    <p class="duration">⏱ 25 minutes</p>
-                </div>
-                <div class="service-option" data-service-id="4" data-price="18" data-duration="28" onclick="selectService(4)">
-                    <h3>Taper Fade</h3>
-                    <p class="price">$18</p>
-                    <p class="duration">⏱ 28 minutes</p>
-                </div>
+            <div class="service-grid" id="service-grid">
+                <!-- Services will be loaded dynamically from database -->
             </div>
         </div>
 

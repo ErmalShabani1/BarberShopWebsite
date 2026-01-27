@@ -54,31 +54,84 @@
                 <div id="barber-users"></div>
             </div>
             
-            <!-- Add Service Form -->
+            <!-- Services Management Section -->
+            <div class="services-management">
+                <h3>Services Management</h3>
+                
+                <!-- Service Form -->
+                <div class="add-service-form">
+                    <h4 id="service-form-title">Add New Service</h4>
+
+                    <form id="add-service-form">
+                        <input type="hidden" id="service-id" value="">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="service-name">Service Name</label>
+                                <select id="service-name-selector" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; width: 100%; margin-bottom: 8px;">
+                                    <option value="">-- Add New Service --</option>
+                                </select>
+                                <input type="text" id="service-name" placeholder="Enter service name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="service-price">Price ($)</label>
+                                <input type="number" id="service-price" step="0.01" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="service-duration">Duration (minutes)</label>
+                                <input type="number" id="service-duration" min="5" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="service-description">Description</label>
+                            <textarea id="service-description" rows="3" required></textarea>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="submit" class="submit-btn" id="service-submit-btn">Add Service</button>
+                            <button type="button" class="cancel-btn" id="service-cancel-btn" style="display: none;">Cancel Edit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Panel - Services Management -->
+        <div id="admin-services-panel" class="role-panel" style="display: none;">
+            <h3>Services Management</h3>
+            
+            <!-- Service Form -->
             <div class="add-service-form">
-                <h3>Add New Service</h3>
-                <form id="add-service-form">
+                <h4 id="admin-service-form-title">Add New Service</h4>
+
+                <form id="admin-service-form">
+                    <input type="hidden" id="admin-service-id" value="">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="service-name">Service Name</label>
-                            <input type="text" id="service-name" required>
+                            <label for="admin-service-name">Service Name</label>
+                            <select id="admin-service-name-selector" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; width: 100%; margin-bottom: 8px;">
+                                <option value="">-- Add New Service --</option>
+                            </select>
+                            <input type="text" id="admin-service-name" placeholder="Enter service name" required>
                         </div>
                         <div class="form-group">
-                            <label for="service-price">Price ($)</label>
-                            <input type="number" id="service-price" min="0" required>
+                            <label for="admin-service-price">Price ($)</label>
+                            <input type="number" id="admin-service-price" step="0.01" min="0" required>
                         </div>
                         <div class="form-group">
-                            <label for="service-duration">Duration (minutes)</label>
-                            <input type="number" id="service-duration" min="5" required>
+                            <label for="admin-service-duration">Duration (minutes)</label>
+                            <input type="number" id="admin-service-duration" min="5" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="service-description">Description</label>
-                        <textarea id="service-description" rows="3" required></textarea>
+                        <label for="admin-service-description">Description</label>
+                        <textarea id="admin-service-description" rows="3" required></textarea>
                     </div>
-                    <button type="submit" class="submit-btn">Add Service</button>
+                    <div style="display: flex; gap: 10px;">
+                        <button type="submit" class="submit-btn" id="admin-service-submit-btn">Add Service</button>
+                        <button type="button" class="cancel-btn" id="admin-service-cancel-btn" style="display: none;">Cancel Edit</button>
+                    </div>
                 </form>
             </div>
+
         </div>
 
         <!-- User Panel -->
