@@ -111,6 +111,61 @@ class User {
         return ["success" => false, "message" => "Not logged in"];
     }
 
+    public function updateUserRole($username, $newRole) {
+        // Check if user is admin
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+            return ["success" => false, "message" => "Unauthorized"];
+        }
+
+        // Validate role
+        $validRoles = ['client', 'barber', 'admin'];
+        if (!in_array($newRole, $validRoles)) {
+            return ["success" => false, "message" => "Invalid role"];
+        }
+
+        $stmt = $this->conn->prepare("UPDATE users SET role = ? WHERE username = ?");
+        $stmt->bind_param("ss", $newRole, $username);
+        
+        if ($stmt->execute()) {
+            $stmt->close();
+            return ["success" => true, "message" => "Role updated successfully"];
+        } else {
+            $stmt->close();
+            return ["success" => false, "message" => "Failed to update role"];
+        }
+    }
+
+    public function deleteUser($username) {
+        // Check if user is admin
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+            return ["success" => false, "message" => "Unauthorized"];
+        }
+
+        // Prevent deleting yourself
+        if ($_SESSION['username'] === $username) {
+            return ["success" => false, "message" => "Cannot delete your own account"];
+        }
+
+        $stmt = $this->conn->prepare("DELETE FROM users WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        
+        if ($stmt->execute()) {
+            $stmt->close();
+            return ["success" => true, "message" => "User deleted successfully"];
+        } else {
+            $stmt->close();
+            return ["success" => false, "message" => "Failed to delete user"];
+        }
+    }
+
     public function __destruct() {
         $this->db->close();
     }

@@ -146,7 +146,7 @@
         <p>Copyright © 2025 Barbershop. All rights reserved.</p>
     </footer>
 
-    <script src="login.js"></script>
-    <script src="edit.js"></script>
+    <script src="login.js?v=<?php echo time(); ?>"></script>
+    <script src="edit.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>

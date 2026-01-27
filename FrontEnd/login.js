@@ -179,6 +179,47 @@ class AuthSystem {
             return [];
         }
     }
+
+    async updateUserRole(username, newRole) {
+        try {
+            const response = await fetch('../BackEnd/user_actions.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    action: 'updateRole',
+                    username: username,
+                    role: newRole
+                })
+            });
+            const result = await response.json();
+            return result.success;
+        } catch (error) {
+            console.error('Error updating user role:', error);
+            return false;
+        }
+    }
+
+    async deleteUser(username) {
+        try {
+            const response = await fetch('../BackEnd/user_actions.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    action: 'deleteUser',
+                    username: username
+                })
+            });
+            const result = await response.json();
+            return result.success;
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            return false;
+        }
+    }
 }
 
 // Initialize auth system

@@ -312,13 +312,13 @@ class EditBookingSystem {
                             <td><span class="role-badge role-${user.role}">${user.role}</span></td>
                             <td>${new Date(user.createdAt).toLocaleDateString()}</td>
                             <td>
-                                <select class="role-select" onchange="editSystem.changeUserRole('${user.username}', this.value)" ${user.username === 'admin' ? 'disabled' : ''}>
-                                    <option value="user" ${user.role === 'user' ? 'selected' : ''}>User</option>
+                                <select class="role-select" data-username="${user.username}" ${user.username === 'admin' ? 'disabled' : ''}>
+                                    <option value="client" ${user.role === 'client' ? 'selected' : ''}>Client</option>
                                     <option value="barber" ${user.role === 'barber' ? 'selected' : ''}>Barber</option>
                                     <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
                                 </select>
                                 ${user.username !== 'admin' ? `
-                                    <button class="action-btn btn-cancel" onclick="editSystem.removeUser('${user.username}')" style="font-size: 80%; padding: 0.3em 0.6em;">Delete</button>
+                                    <button class="action-btn btn-cancel" data-username="${user.username}" data-action="delete" style="font-size: 80%; padding: 0.3em 0.6em;">Delete</button>
                                 ` : ''}
                             </td>
                         </tr>
@@ -328,6 +328,25 @@ class EditBookingSystem {
         `;
 
         container.innerHTML = tableHTML;
+        
+        // Add event listeners for role change dropdowns
+        const roleSelects = container.querySelectorAll('.role-select');
+        roleSelects.forEach(select => {
+            select.addEventListener('change', async (e) => {
+                const username = e.target.dataset.username;
+                const newRole = e.target.value;
+                await this.changeUserRole(username, newRole);
+            });
+        });
+        
+        // Add event listeners for delete buttons
+        const deleteButtons = container.querySelectorAll('button[data-action="delete"]');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const username = e.target.dataset.username;
+                await this.removeUser(username);
+            });
+        });
     }
 
     async renderBarberUsers() {
@@ -377,25 +396,23 @@ class EditBookingSystem {
         container.innerHTML = tableHTML;
     }
 
-    changeUserRole(username, newRole) {
-        if (confirm(`Change ${username}'s role to ${newRole}?`)) {
-            if (auth.updateUserRole(username, newRole)) {
-                alert('Role updated successfully!');
-                this.renderAdminUsers();
-            } else {
-                alert('Failed to update role');
-            }
+    async changeUserRole(username, newRole) {
+        const success = await window.authSystem.updateUserRole(username, newRole);
+        if (success) {
+            console.log(`Role updated: ${username} -> ${newRole}`);
+            await this.renderAdminUsers();
+        } else {
+            console.error(`Failed to update role for ${username}`);
         }
     }
 
-    removeUser(username) {
-        if (confirm(`Are you sure you want to delete user ${username}?`)) {
-            if (auth.deleteUser(username)) {
-                alert('User deleted successfully!');
-                this.renderAdminUsers();
-            } else {
-                alert('Failed to delete user. Cannot delete admin account.');
-            }
+    async removeUser(username) {
+        const success = await window.authSystem.deleteUser(username);
+        if (success) {
+            console.log(`User deleted: ${username}`);
+            await this.renderAdminUsers();
+        } else {
+            console.error(`Failed to delete user: ${username}`);
         }
     }
 
