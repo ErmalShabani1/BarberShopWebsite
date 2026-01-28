@@ -104,6 +104,31 @@ class DatabaseSetup {
         } else {
             echo "Error: " . $this->conn->error . "<br>";
         }
+
+        // Edit Logs table
+        $editLogsTable = "CREATE TABLE IF NOT EXISTS edit_logs (
+            id INT(11) AUTO_INCREMENT PRIMARY KEY,
+            user_id INT(11) NOT NULL,
+            edited_by VARCHAR(100) NOT NULL,
+            entity_type VARCHAR(50) NOT NULL COMMENT 'services, appointments, users, etc.',
+            entity_id INT(11) NOT NULL,
+            action VARCHAR(50) NOT NULL COMMENT 'create, update, delete',
+            old_values JSON,
+            new_values JSON,
+            change_description TEXT,
+            ip_address VARCHAR(45),
+            user_agent VARCHAR(255),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+            INDEX (entity_type, entity_id),
+            INDEX (created_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+
+        if ($this->conn->query($editLogsTable) === TRUE) {
+            echo "✓ Edit Logs table created<br>";
+        } else {
+            echo "Error: " . $this->conn->error . "<br>";
+        }
     }
 
     public function setup() {
