@@ -9,20 +9,39 @@ $conn = $db->connect();
 
 // Check if requesting barbers only (public access)
 if (isset($_GET['role']) && $_GET['role'] === 'barber') {
-    // Get all barbers - public access, no authentication required
-    $stmt = $conn->prepare("SELECT id, username, email, full_name, created_at FROM users WHERE role = 'barber' ORDER BY created_at DESC");
+    // detect optional columns
+    $dbName = $conn->query("SELECT DATABASE() as db")->fetch_assoc()['db'];
+    $hasDesc = false; $hasImage = false;
+    $q = $conn->prepare("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'users'");
+    $q->bind_param('s', $dbName);
+    $q->execute();
+    $colsRes = $q->get_result();
+    while ($c = $colsRes->fetch_assoc()) {
+        if ($c['COLUMN_NAME'] === 'description') $hasDesc = true;
+        if ($c['COLUMN_NAME'] === 'image_url') $hasImage = true;
+    }
+    $q->close();
+
+    $select = 'id, username, email, full_name, created_at';
+    if ($hasDesc) $select .= ', description';
+    if ($hasImage) $select .= ', image_url';
+
+    $stmt = $conn->prepare("SELECT {$select} FROM users WHERE role = 'barber' ORDER BY created_at DESC");
     $stmt->execute();
     $result = $stmt->get_result();
     
     $barbers = [];
     while ($row = $result->fetch_assoc()) {
-        $barbers[] = [
+        $b = [
             'id' => $row['id'],
             'username' => $row['username'],
             'email' => $row['email'],
             'fullName' => $row['full_name'],
             'createdAt' => $row['created_at']
         ];
+        if ($hasDesc) $b['description'] = $row['description'];
+        if ($hasImage) $b['imageUrl'] = $row['image_url'];
+        $barbers[] = $b;
     }
     
     $stmt->close();

@@ -14,10 +14,12 @@ async function loadBarbers() {
             data.barbers.forEach(barber => {
                 const barberCard = document.createElement('div');
                 barberCard.className = 'barber-card';
+                const imgSrc = barber.imageUrl ? barber.imageUrl : '../images/image1.jpg';
+                const desc = barber.description ? barber.description : 'Professional Barber';
                 barberCard.innerHTML = `
-                    <img src="../images/image1.jpg" alt="${barber.fullName || barber.username}">
+                    <img src="${imgSrc}" alt="${barber.fullName || barber.username}">
                     <h3>${barber.fullName || barber.username}</h3>
-                    <p>Professional Barber</p>
+                    <p>${desc}</p>
                     <p>Email: ${barber.email}</p>
                 `;
                 track.appendChild(barberCard);
