@@ -1,6 +1,7 @@
 <?php
-session_start();
-header('Content-Type: application/json');
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once 'db_config.php';
 
 class EditLogger {
@@ -183,8 +184,9 @@ class EditLogger {
     }
 }
 
-
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+// Only run the API endpoint if this file is accessed directly
+if (basename($_SERVER['PHP_SELF']) === 'edit_logs.php') {
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $action = isset($_GET['action']) ? $_GET['action'] : '';
     $logger = new EditLogger();
 
@@ -221,7 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         default:
             echo json_encode(["success" => false, "message" => "Invalid action"]);
     }
-} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     $logger = new EditLogger();
 
@@ -242,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         echo json_encode(["success" => false, "message" => "Invalid action"]);
     }
-} else {
-    echo json_encode(["success" => false, "message" => "Invalid request method"]);
+    } else {
+        echo json_encode(["success" => false, "message" => "Invalid request method"]);
+    }
 }
-?>

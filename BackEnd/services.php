@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     switch ($action) {
         case 'getAll':
             // Get all active services ordered by display_order
-            $stmt = $conn->prepare("SELECT id, name, description, price, duration, display_order FROM services WHERE is_active = TRUE ORDER BY display_order ASC");
+            $stmt = $conn->prepare("SELECT id, name, description, price, duration, display_order, created_at, updated_at FROM services WHERE is_active = TRUE ORDER BY display_order ASC");
             $stmt->execute();
             $result = $stmt->get_result();
             $services = array();
@@ -135,8 +135,11 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $oldService = $resultOld->fetch_assoc();
             $stmtOld->close();
             
-            $stmt = $conn->prepare("UPDATE services SET name = ?, description = ?, price = ?, duration = ?, display_order = ? WHERE id = ?");
-            $stmt->bind_param("ssdiii", $name, $description, $price, $duration, $display_order, $id);
+            // Get current username
+            $editedBy = isset($_SESSION['username']) ? $_SESSION['username'] : 'unknown';
+            
+            $stmt = $conn->prepare("UPDATE services SET name = ?, description = ?, price = ?, duration = ?, display_order = ?, edited_by = ? WHERE id = ?");
+            $stmt->bind_param("ssdissi", $name, $description, $price, $duration, $display_order, $editedBy, $id);
             
             if ($stmt->execute()) {
                 $response['success'] = true;

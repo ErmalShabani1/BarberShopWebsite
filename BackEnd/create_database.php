@@ -76,6 +76,7 @@ class DatabaseSetup {
             image_url VARCHAR(255),
             display_order INT(11) DEFAULT 0,
             is_active BOOLEAN DEFAULT TRUE,
+            edited_by VARCHAR(100) DEFAULT NULL COMMENT 'Username of last editor',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";

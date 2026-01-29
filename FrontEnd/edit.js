@@ -59,16 +59,22 @@ class EditBookingSystem {
     }
 
     async showAdminPanel() {
+        console.log('Showing admin panel');
         document.getElementById('admin-panel').classList.add('active');
         document.getElementById('admin-services-panel').classList.add('active');
+        console.log('Admin services panel:', document.getElementById('admin-services-panel'));
         this.renderAdminBookings();
         await this.renderAdminUsers();
+        console.log('About to render service edit history');
+        await this.renderServiceEditHistory();
+        console.log('Service edit history rendered');
     }
 
     async showBarberPanel() {
         document.getElementById('barber-panel').classList.add('active');
         this.renderBarberBookings();
         await this.renderBarberUsers();
+        await this.renderBarberMessages();
     }
 
     showUserPanel() {
@@ -418,19 +424,29 @@ class EditBookingSystem {
 
     // Service Management for Barbers
     setupAddServiceForm() {
+        console.log('Setting up barber service form');
         const form = document.getElementById('add-service-form');
         const nameSelector = document.getElementById('service-name-selector');
         const cancelBtn = document.getElementById('service-cancel-btn');
         
+        if (!form || !nameSelector) {
+            console.error('Barber service form elements not found:', { form, nameSelector });
+            return;
+        }
+        
+        console.log('Form elements found, loading services');
         // Load services from database and populate dropdown
         this.loadServicesFromDatabase('barber');
         
         // Handle service selection from dropdown
         nameSelector.addEventListener('change', (e) => {
             const serviceId = e.target.value;
+            const formFields = document.getElementById('service-form-fields');
             if (serviceId) {
+                formFields.style.display = 'block';
                 this.loadServiceForEdit(parseInt(serviceId), 'barber');
             } else {
+                formFields.style.display = 'none';
                 this.resetServiceForm('barber');
             }
         });
@@ -445,6 +461,13 @@ class EditBookingSystem {
             e.preventDefault();
             
             const serviceId = document.getElementById('service-id').value;
+            
+            // Only allow editing existing services
+            if (!serviceId) {
+                alert('Please select a service to edit.');
+                return;
+            }
+            
             const formData = new FormData();
             
             formData.append('name', document.getElementById('service-name').value);
@@ -452,13 +475,8 @@ class EditBookingSystem {
             formData.append('price', document.getElementById('service-price').value);
             formData.append('duration', document.getElementById('service-duration').value);
             formData.append('display_order', 0);
-            
-            if (serviceId) {
-                formData.append('action', 'edit');
-                formData.append('id', serviceId);
-            } else {
-                formData.append('action', 'add');
-            }
+            formData.append('action', 'edit');
+            formData.append('id', serviceId);
             
             try {
                 const response = await fetch('../BackEnd/services.php', {
@@ -485,19 +503,29 @@ class EditBookingSystem {
 
     // Service Management for Admin
     setupAdminServiceForm() {
+        console.log('Setting up admin service form');
         const form = document.getElementById('admin-service-form');
         const nameSelector = document.getElementById('admin-service-name-selector');
         const cancelBtn = document.getElementById('admin-service-cancel-btn');
         
+        if (!form || !nameSelector) {
+            console.error('Admin service form elements not found:', { form, nameSelector });
+            return;
+        }
+        
+        console.log('Form elements found, loading services');
         // Load services from database and populate dropdown
         this.loadServicesFromDatabase('admin');
         
         // Handle service selection from dropdown
         nameSelector.addEventListener('change', (e) => {
             const serviceId = e.target.value;
+            const formFields = document.getElementById('admin-service-form-fields');
             if (serviceId) {
+                formFields.style.display = 'block';
                 this.loadServiceForEdit(parseInt(serviceId), 'admin');
             } else {
+                formFields.style.display = 'none';
                 this.resetServiceForm('admin');
             }
         });
@@ -512,6 +540,13 @@ class EditBookingSystem {
             e.preventDefault();
             
             const serviceId = document.getElementById('admin-service-id').value;
+            
+            // Only allow editing existing services
+            if (!serviceId) {
+                alert('Please select a service to edit.');
+                return;
+            }
+            
             const formData = new FormData();
             
             formData.append('name', document.getElementById('admin-service-name').value);
@@ -519,13 +554,8 @@ class EditBookingSystem {
             formData.append('price', document.getElementById('admin-service-price').value);
             formData.append('duration', document.getElementById('admin-service-duration').value);
             formData.append('display_order', 0);
-            
-            if (serviceId) {
-                formData.append('action', 'edit');
-                formData.append('id', serviceId);
-            } else {
-                formData.append('action', 'add');
-            }
+            formData.append('action', 'edit');
+            formData.append('id', serviceId);
             
             try {
                 const response = await fetch('../BackEnd/services.php', {
@@ -552,11 +582,19 @@ class EditBookingSystem {
     
     async loadServicesFromDatabase(panel) {
         try {
+            console.log('Loading services for panel:', panel);
             const response = await fetch('../BackEnd/services.php?action=getAll');
-            const data = await response.json();
+            const text = await response.text();
+            console.log('Raw response:', text);
+            
+            const data = JSON.parse(text);
+            console.log('Services response:', data);
             
             if (data.success && data.services) {
+                console.log('Populating dropdown with services:', data.services);
                 this.populateServiceDropdown(data.services, panel);
+            } else {
+                console.log('No services found or error:', data.message);
             }
         } catch (error) {
             console.error('Error loading services:', error);
@@ -566,7 +604,15 @@ class EditBookingSystem {
     populateServiceDropdown(services, panel) {
         const prefix = panel === 'admin' ? 'admin-' : '';
         const selector = document.getElementById(`${prefix}service-name-selector`);
-        selector.innerHTML = '<option value="">-- Add New Service --</option>';
+        console.log('Selector element:', selector);
+        console.log('Services to populate:', services);
+        
+        if (!selector) {
+            console.error('Service selector not found for panel:', panel);
+            return;
+        }
+        
+        selector.innerHTML = '<option value="">-- Select a Service to Edit --</option>';
         
         services.forEach(service => {
             const option = document.createElement('option');
@@ -574,8 +620,163 @@ class EditBookingSystem {
             option.textContent = service.name;
             selector.appendChild(option);
         });
+        
+        console.log('Dropdown populated with', services.length, 'services');
     }
     
+    async renderServiceEditHistory() {
+        console.log('renderServiceEditHistory called');
+        const container = document.getElementById('service-edit-history');
+        console.log('Container element:', container);
+        
+        try {
+            const response = await fetch('../BackEnd/services.php?action=getAll');
+            const text = await response.text();
+            console.log('History response:', text);
+            const data = JSON.parse(text);
+            
+            if (!data.success || !data.services || data.services.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>No services found</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const tableHTML = `
+                <table class="bookings-table">
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Created</th>
+                            <th>Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.services.map(service => {
+                            const created = new Date(service.created_at);
+                            const updated = new Date(service.updated_at);
+                            const formattedCreated = created.toLocaleDateString() + ' ' + created.toLocaleTimeString();
+                            const formattedUpdated = updated.toLocaleDateString() + ' ' + updated.toLocaleTimeString();
+                            
+                            return `
+                                <tr>
+                                    <td><strong>${service.name}</strong></td>
+                                    <td>${formattedCreated}</td>
+                                    <td>${formattedUpdated}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            container.innerHTML = tableHTML;
+        } catch (error) {
+            console.error('Error loading service edit history:', error);
+            container.innerHTML = `
+                <div class="empty-state">
+                    <p style="color: red;">Error loading edit history</p>
+                </div>
+            `;
+        }
+    }    
+    async renderBarberMessages() {
+        const container = document.getElementById('barber-messages');
+        
+        try {
+            const response = await fetch('../BackEnd/messages.php');
+            const data = await response.json();
+            
+            if (!data.success || !data.messages || data.messages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>No messages yet</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const tableHTML = `
+                <table class="bookings-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Subject</th>
+                            <th>Message</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.messages.map(msg => {
+                            const date = new Date(msg.created_at);
+                            const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                            const statusClass = msg.status === 'read' ? 'status-completed' : 'status-pending';
+                            
+                            return `
+                                <tr>
+                                    <td><strong>${msg.name}</strong></td>
+                                    <td>${msg.phone || 'N/A'}</td>
+                                    <td>${msg.email}</td>
+                                    <td>${msg.subject}</td>
+                                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">${msg.message}</td>
+                                    <td>${formattedDate}</td>
+                                    <td><span class="status-badge ${statusClass}">${msg.status}</span></td>
+                                    <td>
+                                        <button class="action-btn" onclick="window.editSystem.toggleMessageStatus(${msg.id}, '${msg.status}')">
+                                            ${msg.status === 'read' ? 'Mark Unread' : 'Mark Read'}
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            container.innerHTML = tableHTML;
+        } catch (error) {
+            console.error('Error loading messages:', error);
+            container.innerHTML = `
+                <div class="empty-state">
+                    <p style="color: red;">Error loading messages</p>
+                </div>
+            `;
+        }
+    }
+    
+    async toggleMessageStatus(messageId, currentStatus) {
+        const newStatus = currentStatus === 'read' ? 'unread' : 'read';
+        
+        try {
+            const response = await fetch('../BackEnd/messages.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    messageId: messageId,
+                    status: newStatus
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                await this.renderBarberMessages();
+            } else {
+                alert('Failed to update message status');
+            }
+        } catch (error) {
+            console.error('Error updating message status:', error);
+            alert('Error updating message status');
+        }
+    }    
     async loadServiceForEdit(serviceId, panel) {
         const prefix = panel === 'admin' ? 'admin-' : '';
         
@@ -606,9 +807,13 @@ class EditBookingSystem {
     resetServiceForm(panel) {
         const prefix = panel === 'admin' ? 'admin-' : '';
         const formId = panel === 'admin' ? 'admin-service-form' : 'add-service-form';
+        const formFieldsId = panel === 'admin' ? 'admin-service-form-fields' : 'service-form-fields';
         
         const form = document.getElementById(formId);
         if (form) form.reset();
+        
+        const formFields = document.getElementById(formFieldsId);
+        if (formFields) formFields.style.display = 'none';
         
         const serviceId = document.getElementById(`${prefix}service-id`);
         if (serviceId) serviceId.value = '';
@@ -617,10 +822,10 @@ class EditBookingSystem {
         if (selector) selector.value = '';
         
         const title = document.getElementById(`${prefix}service-form-title`);
-        if (title) title.textContent = 'Add New Service';
+        if (title) title.textContent = 'Edit Service';
         
         const submitBtn = document.getElementById(`${prefix}service-submit-btn`);
-        if (submitBtn) submitBtn.textContent = 'Add Service';
+        if (submitBtn) submitBtn.textContent = 'Update Service';
         
         const cancelBtn = document.getElementById(`${prefix}service-cancel-btn`);
         if (cancelBtn) cancelBtn.style.display = 'none';

@@ -3,10 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>View Barbers</title>
     <link rel="stylesheet" href="View.css">
 </head>
 <body>
+    <script>
+        // Force reload on back/forward navigation
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted || (performance.navigation && performance.navigation.type === 2)) {
+                window.location.reload();
+            }
+        });
+    </script>
     <header class="main-header">
         <div class="header-content">
             <img src="../images/image1.jpg" class="logo" alt="Barbershop Logo">

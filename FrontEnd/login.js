@@ -7,14 +7,27 @@ class AuthSystem {
 
     async checkSession() {
         try {
-            const response = await fetch('../BackEnd/user_actions.php?action=getCurrentUser');
+            const response = await fetch('../BackEnd/user_actions.php?action=getCurrentUser', {
+                credentials: 'include'
+            });
             const result = await response.json();
             if (result.success) {
                 this.currentUser = result.user;
+                localStorage.setItem('currentUser', JSON.stringify(result.user));
+                this.updateNavigation();
+            } else {
+                // Server session invalid - clear client storage
+                this.currentUser = null;
+                localStorage.removeItem('currentUser');
+                sessionStorage.clear();
                 this.updateNavigation();
             }
         } catch (error) {
             console.error('Session check failed:', error);
+            // On error, clear client storage to be safe
+            this.currentUser = null;
+            localStorage.removeItem('currentUser');
+            sessionStorage.clear();
         }
     }
 
@@ -62,15 +75,22 @@ class AuthSystem {
 
     async logout() {
         try {
-            const response = await fetch('../BackEnd/user_actions.php?action=logout');
-            const result = await response.json();
+            // Clear client-side storage first
+            localStorage.removeItem('currentUser');
+            sessionStorage.clear();
+            this.currentUser = null;
             
-            if (result.success) {
-                this.currentUser = null;
-                window.location.href = 'index.php';
-            }
+            // Call server to destroy session
+            await fetch('../BackEnd/user_actions.php?action=logout', {
+                credentials: 'include'
+            });
+            
+            // Prevent back button by clearing history
+            window.location.replace('index.php');
         } catch (error) {
             console.error('Logout error:', error);
+            // Force logout even if server call fails
+            window.location.replace('index.php');
         }
     }
 

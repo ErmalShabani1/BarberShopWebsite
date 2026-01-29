@@ -3,10 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="Booking.css">
     <title>Book Appointment - Barbershop</title>
 </head>
 <body>
+    <script>
+        // Force reload on back/forward navigation
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted || (performance.navigation && performance.navigation.type === 2)) {
+                window.location.reload();
+            }
+        });
+    </script>
     <!-- Pjesa e Headerit -->
     <header class="main-header">
         <div class="header-content">
