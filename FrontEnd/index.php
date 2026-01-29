@@ -27,7 +27,12 @@
 
 	<!-- Navigation -->
 	<nav class="main-nav">
-		<ul class="nav-menu">
+		<button class="hamburger-menu" id="hamburger-btn" onclick="toggleMobileMenu()">
+			<span></span>
+			<span></span>
+			<span></span>
+		</button>
+		<ul class="nav-menu" id="nav-menu">
 			<li><a href="index.php" class="nav-link active">Home</a></li>
 			<li><a href="Booking.php" class="nav-link">Booking</a></li>
 			<li><a href="View.php" class="nav-link">View Barbers</a></li>
@@ -78,6 +83,27 @@
 
 	<script src="login.js"></script>
 	<script>
+		// Mobile menu toggle
+		function toggleMobileMenu() {
+			const hamburger = document.getElementById('hamburger-btn');
+			const navMenu = document.getElementById('nav-menu');
+			hamburger.classList.toggle('active');
+			navMenu.classList.toggle('mobile-active');
+		}
+
+		// Close menu when a link is clicked
+		document.addEventListener('DOMContentLoaded', () => {
+			const navLinks = document.querySelectorAll('.nav-menu a');
+			navLinks.forEach(link => {
+				link.addEventListener('click', () => {
+					const hamburger = document.getElementById('hamburger-btn');
+					const navMenu = document.getElementById('nav-menu');
+					hamburger.classList.remove('active');
+					navMenu.classList.remove('mobile-active');
+				});
+			});
+		});
+
 		// Load services from database
 		async function loadServices() {
 			try {

@@ -1,5 +1,25 @@
 console.log('Booking.js loaded');
 
+
+function toggleMobileMenu() {
+    const hamburger = document.getElementById('hamburger-btn');
+    const navMenu = document.getElementById('nav-menu');
+    hamburger.classList.toggle('active');
+    navMenu.classList.toggle('mobile-active');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const navLinks = document.querySelectorAll('.nav-menu a, .nav-menu button');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            const hamburger = document.getElementById('hamburger-btn');
+            const navMenu = document.getElementById('nav-menu');
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('mobile-active');
+        });
+    });
+});
+
 // ===== LOGIN MODAL FUNCTIONS =====
 function openLoginModal() {
     console.log('openLoginModal called');

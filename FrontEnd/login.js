@@ -294,15 +294,22 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const username = document.getElementById('register-username').value;
             const email = document.getElementById('register-email').value;
+            const fullName = username; // keep original behavior: use username as fullName
+            const phone = document.getElementById('register-phone').value;
             const password = document.getElementById('register-password').value;
             const confirmPassword = document.getElementById('register-confirm-password').value;
-            const fullName = username; // Use username as fullName for now
-            const phone = ''; // Optional field
             const errorMsg = document.getElementById('register-error-message');
             const successMsg = document.getElementById('register-success-message');
             
             if (password !== confirmPassword) {
                 errorMsg.textContent = 'Passwords do not match';
+                errorMsg.style.display = 'block';
+                successMsg.style.display = 'none';
+                return;
+            }
+            
+            if (!phone) {
+                errorMsg.textContent = 'Phone number is required';
                 errorMsg.style.display = 'block';
                 successMsg.style.display = 'none';
                 return;

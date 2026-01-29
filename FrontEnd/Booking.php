@@ -29,7 +29,12 @@
 
     <!-- navigimi -->
     <nav class="main-nav">
-        <ul class="nav-menu">
+        <button class="hamburger-menu" id="hamburger-btn" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul class="nav-menu" id="nav-menu">
             <li><a href="index.php" class="nav-link">Home</a></li>
             <li><a href="Booking.php" class="nav-link active">Booking</a></li>
             <li><a href="View.php" class="nav-link">View Barbers</a></li>
@@ -82,6 +87,10 @@
                     <div class="login-form-group">
                         <label for="register-email">Email</label>
                         <input type="email" id="register-email" name="email" autocomplete="email" required>
+                    </div>
+                    <div class="login-form-group">
+                        <label for="register-phone">Phone Number</label>
+                        <input type="tel" id="register-phone" name="phone" autocomplete="tel" required>
                     </div>
                     <div class="login-form-group">
                         <label for="register-password">Password</label>
