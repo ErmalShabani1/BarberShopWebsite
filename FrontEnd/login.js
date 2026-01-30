@@ -182,16 +182,19 @@ class AuthSystem {
         `;
         nav.appendChild(userInfo);
 
-        // Profile click opens bookings modal
-        const profileBtn = document.getElementById('profile-btn');
-        if (profileBtn) {
-            profileBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                console.debug('profile-btn clicked');
-                this.showProfileBookings();
-            });
-        } else {
-            console.debug('profile-btn not found after append');
+        // Profile click opens bookings modal - ONLY on index.php
+        const currentPage = window.location.pathname.split('/').pop();
+        if (currentPage === 'index.php') {
+            const profileBtn = document.getElementById('profile-btn');
+            if (profileBtn) {
+                profileBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    console.debug('profile-btn clicked');
+                    this.showProfileBookings();
+                });
+            } else {
+                console.debug('profile-btn not found after append');
+            }
         }
 
         const logoutBtn = document.createElement('li');
@@ -222,6 +225,8 @@ class AuthSystem {
         title.textContent = 'My Bookings';
         list.innerHTML = '<p>Loading...</p>';
         overlay.style.display = 'flex';
+        overlay.style.alignItems = 'center';
+        overlay.style.justifyContent = 'center';
 
         try {
             const response = await fetch('../BackEnd/booking.php', {
@@ -246,12 +251,7 @@ class AuthSystem {
             }
 
             list.innerHTML = appointments.map(appt => {
-                // parse barber from notes if present
-                let barber = 'Not set';
-                if (appt.notes) {
-                    const m = appt.notes.match(/Barber:\s*([^,]+)/i);
-                    if (m) barber = m[1].trim();
-                }
+                const barber = appt.barber_name || 'Not set';
                 const service = appt.service_type || (appt.service && appt.service.name) || 'Unknown';
                 const date = appt.appointment_date || appt.date || '';
                 const time = (appt.appointment_time || appt.time || '').substring(0,5);

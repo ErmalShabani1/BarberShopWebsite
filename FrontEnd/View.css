@@ -256,4 +256,11 @@ body {
     .barber-card {
         min-width: 70%;
     }
+
+    #user-info {
+        right: 20px !important;
+    }
+    #logout-btn-item {
+        right: 6% !important;
+    }
 }

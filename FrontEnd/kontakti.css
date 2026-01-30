@@ -552,4 +552,11 @@ body {
     .map-container {
         height: 300px;
     }
+
+    #user-info {
+        right: 20px !important;
+    }
+    #logout-btn-item {
+        right: 6% !important;
+    }
 }

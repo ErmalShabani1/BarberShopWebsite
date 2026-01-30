@@ -816,4 +816,11 @@ body {
     .role-tabs {
         flex-direction: column;
     }
+
+    #user-info {
+        right: 20px !important;
+    }
+    #logout-btn-item {
+        right: 6% !important;
+    }
 }

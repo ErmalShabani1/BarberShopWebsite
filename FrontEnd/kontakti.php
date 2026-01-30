@@ -88,8 +88,10 @@
 						<label for="register-password">Password</label>
 						<input type="password" id="register-password" name="password" required>
 					</div>
-					<div class="login-form-group">
-						<label for="register-confirm-password">Confirm Password</label>
+					<div class="login-form-group">					<label for="register-phone">Phone Number</label>
+					<input type="tel" id="register-phone" name="phone" autocomplete="tel" required>
+				</div>
+				<div class="login-form-group">						<label for="register-confirm-password">Confirm Password</label>
 						<input type="password" id="register-confirm-password" name="confirm-password" required>
 					</div>
 					<button type="submit" class="login-btn">Register</button>
