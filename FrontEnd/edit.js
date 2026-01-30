@@ -38,7 +38,48 @@ class EditBookingSystem {
     }
 
     loadBookings() {
+        // Try to fetch bookings from backend (admin view). Fallback to localStorage on error.
+        // Synchronous return not possible; return [] now and caller will refresh after async load.
+        this.fetchBookingsFromServer();
         return JSON.parse(localStorage.getItem('bookings') || '[]');
+    }
+
+    async fetchBookingsFromServer() {
+        try {
+            const resp = await fetch('../BackEnd/get_appointments.php', { credentials: 'include' });
+            const data = await resp.json();
+            if (data.success && Array.isArray(data.appointments)) {
+                // Map server appointments to the format expected by the renderer
+                const mapped = data.appointments.map(a => ({
+                    id: a.id,
+                    customer: {
+                        username: a.customer.username,
+                        fullName: a.customer.fullName
+                    },
+                    barber: {
+                        name: a.barber.name || 'N/A'
+                    },
+                    service: {
+                        name: a.service.name,
+                        price: a.service.price || 0
+                    },
+                    date: a.date,
+                    time: a.time,
+                    status: a.status
+                }));
+
+                this.bookings = mapped;
+                // also update localStorage so other parts still work
+                localStorage.setItem('bookings', JSON.stringify(this.bookings));
+                this.renderAdminBookings();
+                this.renderBarberBookings();
+                this.renderUserBookings();
+            } else {
+                console.warn('No appointments from server or unauthorized.');
+            }
+        } catch (err) {
+            console.error('Error fetching appointments from server:', err);
+        }
     }
 
     loadServices() {
