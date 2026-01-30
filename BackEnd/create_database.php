@@ -43,13 +43,14 @@ class DatabaseSetup {
         $appointmentsTable = "CREATE TABLE IF NOT EXISTS appointments (
             id INT(11) AUTO_INCREMENT PRIMARY KEY,
             user_id INT(11) NOT NULL,
+            barber_id INT(11) NOT NULL,
             service_type VARCHAR(100) NOT NULL,
             appointment_date DATE NOT NULL,
             appointment_time TIME NOT NULL,
             status ENUM('pending', 'confirmed', 'cancelled', 'completed') DEFAULT 'pending',
-            notes TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (barber_id) REFERENCES users(id) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
 
         // Messages table

@@ -82,13 +82,8 @@ class BookingSystem {
         this.selectedTime = null;
         this.currentSlide = 0;
         
-        // Merr te dhenat e berberit
-        this.barbers = [
-            { id: 1, name: 'John Smith', specialty: 'Expert in Fades & Classic Cuts' },
-            { id: 2, name: 'Mike Johnson', specialty: 'Specialist in Modern Styles' },
-            { id: 3, name: 'David Brown', specialty: 'Master of Beard Grooming' },
-            { id: 4, name: 'Chris Wilson', specialty: 'Contemporary Hair Styling Expert' }
-        ];
+        // Merr te dhenat e berberit nga databaza
+        this.barbers = [];
 
         this.services = [];
 
@@ -102,8 +97,50 @@ class BookingSystem {
         // Set minimum date to today
         this.setMinDate();
         
-        // Load services from database
+        // Load barbers and services from database
+        this.loadBarbers();
         this.loadServices();
+        
+        // Add event listener for date input with debounce
+        const dateInput = document.getElementById('booking-date');
+        if (dateInput) {
+            let debounceTimer;
+            dateInput.addEventListener('change', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    this.loadTimeSlots();
+                }, 300);
+            });
+        }
+    }
+
+    async loadBarbers() {
+        try {
+            const response = await fetch('../BackEnd/services.php?action=getBarbers');
+            const data = await response.json();
+            
+            if (data.success && data.barbers) {
+                this.barbers = data.barbers;
+                this.displayBarbers();
+            } else {
+                console.error('Error loading barbers:', data.message);
+            }
+        } catch (error) {
+            console.error('Error loading barbers:', error);
+        }
+    }
+
+    displayBarbers() {
+        const container = document.getElementById('barber-track');
+        if (!container) return;
+        
+        container.innerHTML = this.barbers.map(barber => `
+            <div class="barber-card" data-barber-id="${barber.id}" onclick="selectBarber(${barber.id})">
+                <img src="${barber.image_url || '../images/image1.jpg'}" alt="${barber.name}">
+                <h3>${barber.name}</h3>
+                <p>${barber.specialty}</p>
+            </div>
+        `).join('');
     }
 
     async loadServices() {
@@ -171,7 +208,7 @@ class BookingSystem {
         }
     }
 
-    loadTimeSlots() {
+    async loadTimeSlots() {
         const dateInput = document.getElementById('booking-date');
         const timeSlotsContainer = document.getElementById('time-slots');
         
@@ -180,25 +217,48 @@ class BookingSystem {
         }
 
         this.selectedDate = dateInput.value;
-        timeSlotsContainer.innerHTML = '';
+        timeSlotsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999;">Loading available slots...</p>';
 
-        // Generate time slots
-        this.timeSlots.forEach(time => {
-            const slot = document.createElement('div');
-            slot.className = 'time-slot';
-            slot.textContent = time;
-            slot.onclick = () => this.selectTime(time);
+        // Check if barber is selected
+        if (!this.selectedBarber) {
+            timeSlotsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #f44336;">Please select a barber first</p>';
+            return;
+        }
 
-            // Randomly mark some slots as unavailable (for demo purposes)
-            if (Math.random() > 0.7) {
-                slot.classList.add('unavailable');
-                slot.onclick = null;
+        try {
+            // Fetch booked slots from backend for the selected barber
+            const response = await fetch(`../BackEnd/booking.php?action=getAvailableSlots&date=${this.selectedDate}&barberId=${this.selectedBarber.id}`);
+            const data = await response.json();
+            
+            if (!data.success) {
+                console.error('Error fetching available slots:', data.message);
+                return;
             }
 
-            timeSlotsContainer.appendChild(slot);
-        });
+            const bookedSlots = data.bookedSlots || [];
+            console.log('Booked slots for barber', this.selectedBarber.id, 'on', this.selectedDate, ':', bookedSlots);
+            timeSlotsContainer.innerHTML = '';
 
-        this.updateSummary();
+            // Generate time slots - skip booked ones
+            this.timeSlots.forEach(time => {
+                // Don't show booked slots at all
+                if (bookedSlots.includes(time)) {
+                    return; // Skip this slot
+                }
+                
+                const slot = document.createElement('div');
+                slot.className = 'time-slot';
+                slot.textContent = time;
+                slot.onclick = () => this.selectTime(time);
+
+                timeSlotsContainer.appendChild(slot);
+            });
+
+            this.updateSummary();
+        } catch (error) {
+            console.error('Error loading time slots:', error);
+            timeSlotsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #f44336;">Error loading time slots. Please try again.</p>';
+        }
     }
 
     selectTime(time) {
@@ -272,10 +332,10 @@ class BookingSystem {
         // Get all booking data
         const bookingData = {
             action: 'create',
+            barberId: this.selectedBarber.id,
             serviceType: this.selectedService.name,
             appointmentDate: this.selectedDate,
-            appointmentTime: this.selectedTime,
-            notes: `Barber: ${this.selectedBarber.name}, Service: ${this.selectedService.name} ($${this.selectedService.price})`
+            appointmentTime: this.selectedTime
         };
 
         try {

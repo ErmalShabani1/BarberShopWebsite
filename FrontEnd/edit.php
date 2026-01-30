@@ -4,6 +4,12 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: index.php');
     exit();
 }
+
+// Only allow admin and barber
+if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'barber')) {
+    header('Location: index.php');
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

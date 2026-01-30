@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,7 +38,9 @@
 			<li><a href="Booking.php" class="nav-link">Booking</a></li>
 			<li><a href="View.php" class="nav-link">View Barbers</a></li>
 			<li><a href="kontakti.php" class="nav-link">Contact</a></li>
+			<?php if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'barber')): ?>
 			<li><a href="edit.php" class="nav-link">Edit / Cancel</a></li>
+			<?php endif; ?>
 		</ul>
 	</nav>
 

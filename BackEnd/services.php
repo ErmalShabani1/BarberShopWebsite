@@ -34,6 +34,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $response['services'] = $services;
             break;
 
+        case 'getBarbers':
+            // Get all barbers from users table
+            try {
+                $stmt = $conn->prepare("SELECT id, username, full_name, email, description FROM users WHERE role = 'barber' ORDER BY id ASC");
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $barbers = array();
+                
+                while ($row = $result->fetch_assoc()) {
+                    $barbers[] = array(
+                        'id' => $row['id'],
+                        'name' => $row['full_name'],
+                        'specialty' => !empty($row['description']) ? $row['description'] : 'Professional Barber',
+                        'email' => $row['email'],
+                        'image_url' => '../images/image1.jpg'
+                    );
+                }
+                
+                $stmt->close();
+                $response['success'] = true;
+                $response['barbers'] = $barbers;
+            } catch (Exception $e) {
+                $response['success'] = false;
+                $response['message'] = 'Error loading barbers: ' . $e->getMessage();
+            }
+            break;
+
         case 'getById':
             // Get specific service by ID
             if (isset($_GET['id'])) {

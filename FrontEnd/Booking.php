@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,7 +40,9 @@
             <li><a href="Booking.php" class="nav-link active">Booking</a></li>
             <li><a href="View.php" class="nav-link">View Barbers</a></li>
             <li><a href="kontakti.php" class="nav-link">Contact</a></li>
+            <?php if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'barber')): ?>
             <li><a href="edit.php" class="nav-link">Edit / Cancel</a></li>
+            <?php endif; ?>
             <li><button type="button" id="auth-btn" class="nav-link auth-btn" onclick="openLoginModal()">Login</button></li>
         </ul>
     </nav>
@@ -122,30 +125,7 @@
             <div class="barber-slider">
                 <button class="slider-btn prev" onclick="slideBarbers(-1)">‹</button>
                 <div class="barber-track" id="barber-track">
-                    <div class="barber-card" data-barber-id="1" onclick="selectBarber(1)">
-                        <img src="../images/image1.jpg" alt="Barber 1">
-                        <h3>John Smith</h3>
-                        <p>Expert in Fades & Classic Cuts</p>
-                        <p>⭐ 4.9 (150 reviews)</p>
-                    </div>
-                    <div class="barber-card" data-barber-id="2" onclick="selectBarber(2)">
-                        <img src="../images/image1.jpg" alt="Barber 2">
-                        <h3>Mike Johnson</h3>
-                        <p>Specialist in Modern Styles</p>
-                        <p>⭐ 4.8 (120 reviews)</p>
-                    </div>
-                    <div class="barber-card" data-barber-id="3" onclick="selectBarber(3)">
-                        <img src="../images/image1.jpg" alt="Barber 3">
-                        <h3>David Brown</h3>
-                        <p>Master of Beard Grooming</p>
-                        <p>⭐ 4.9 (180 reviews)</p>
-                    </div>
-                    <div class="barber-card" data-barber-id="4" onclick="selectBarber(4)">
-                        <img src="../images/image1.jpg" alt="Barber 4">
-                        <h3>Chris Wilson</h3>
-                        <p>Contemporary Hair Styling Expert</p>
-                        <p>⭐ 4.7 (95 reviews)</p>
-                    </div>
+                    <!-- Barbers will be loaded dynamically from database -->
                 </div>
                 <button class="slider-btn next" onclick="slideBarbers(1)">›</button>
             </div>
@@ -165,7 +145,7 @@
             <div class="datetime-grid">
                 <div class="form-group">
                     <label for="booking-date">Date</label>
-                    <input type="date" id="booking-date" required onchange="loadTimeSlots()">
+                    <input type="date" id="booking-date" required>
                 </div>
                 <div class="form-group">
                     <label>Available Time Slots</label>

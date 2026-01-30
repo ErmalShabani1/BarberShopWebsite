@@ -48,6 +48,7 @@ class EditBookingSystem {
         try {
             const resp = await fetch('../BackEnd/get_appointments.php', { credentials: 'include' });
             const data = await resp.json();
+            console.log('Appointments response:', data);
             if (data.success && Array.isArray(data.appointments)) {
                 // Map server appointments to the format expected by the renderer
                 const mapped = data.appointments.map(a => ({
@@ -291,13 +292,36 @@ class EditBookingSystem {
         container.innerHTML = tableHTML;
     }
 
-    updateStatus(bookingId, newStatus) {
-        const booking = this.bookings.find(b => b.id === bookingId);
-        if (booking) {
-            booking.status = newStatus;
-            this.saveBookings();
-            this.init(); // Refresh display
-            alert(`Appointment #${bookingId} status updated to ${newStatus}`);
+    async updateStatus(bookingId, newStatus) {
+        try {
+            const response = await fetch('../BackEnd/booking.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: 'update',
+                    appointmentId: bookingId,
+                    status: newStatus
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Update local data
+                const booking = this.bookings.find(b => b.id === bookingId);
+                if (booking) {
+                    booking.status = newStatus;
+                    this.saveBookings();
+                }
+                // Refresh from server
+                await this.fetchBookingsFromServer();
+            } else {
+                console.error('Error updating appointment: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error updating appointment:', error);
         }
     }
 
@@ -306,14 +330,11 @@ class EditBookingSystem {
             this.bookings = this.bookings.filter(b => b.id !== bookingId);
             this.saveBookings();
             this.init();
-            alert('Booking deleted successfully');
         }
     }
 
     cancelBooking(bookingId) {
-        if (confirm('Are you sure you want to cancel this appointment?')) {
-            this.updateStatus(bookingId, 'cancelled');
-        }
+        this.updateStatus(bookingId, 'cancelled');
     }
 
 
