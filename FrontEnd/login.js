@@ -149,43 +149,151 @@ class AuthSystem {
     }
 
     addUserInfo() {
-        if (this.isLoggedIn()) {
-            const nav = document.querySelector('.nav-menu');
-            if (nav) {
-                const existingUserInfo = document.getElementById('user-info');
-                if (existingUserInfo) existingUserInfo.remove();
-                const existingLogoutBtn = document.getElementById('logout-btn-item');
-                if (existingLogoutBtn) existingLogoutBtn.remove();
+        if (!this.isLoggedIn()) return;
 
-                const userInfo = document.createElement('li');
-                userInfo.id = 'user-info';
-                userInfo.style.position = 'absolute';
-                userInfo.style.right = '150px';
-                userInfo.style.top = '50%';
-                userInfo.style.transform = 'translateY(-50%)';
-                userInfo.innerHTML = `
-                    <span class="nav-link" style="cursor: default; padding: 10px 15px; font-size: 14px;">
-                        ${this.currentUser.fullName} (${this.currentUser.role})
-                    </span>
-                `;
-                nav.appendChild(userInfo);
+        const nav = document.querySelector('.nav-menu');
+        if (!nav) {
+            // Nav not available yet — try again after DOMContentLoaded
+            console.debug('addUserInfo: .nav-menu not found, waiting for DOMContentLoaded');
+            document.addEventListener('DOMContentLoaded', () => {
+                // small delay to ensure nav is rendered
+                setTimeout(() => this.addUserInfo(), 50);
+            }, { once: true });
+            return;
+        }
 
-                const logoutBtn = document.createElement('li');
-                logoutBtn.id = 'logout-btn-item';
-                logoutBtn.style.position = 'absolute';
-                logoutBtn.style.right = '5%';
-                logoutBtn.style.top = '50%';
-                logoutBtn.style.transform = 'translateY(-50%)';
-                logoutBtn.innerHTML = `
-                    <a href="#" class="nav-link" id="logout-btn" style="font-size: 14px; padding: 10px 15px;">Logout</a>
-                `;
-                nav.appendChild(logoutBtn);
+        console.debug('addUserInfo: Adding user info for', this.currentUser);
 
-                document.getElementById('logout-btn').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    this.logout();
-                });
+        const existingUserInfo = document.getElementById('user-info');
+        if (existingUserInfo) existingUserInfo.remove();
+        const existingLogoutBtn = document.getElementById('logout-btn-item');
+        if (existingLogoutBtn) existingLogoutBtn.remove();
+
+        const userInfo = document.createElement('li');
+        userInfo.id = 'user-info';
+        userInfo.style.position = 'absolute';
+        userInfo.style.right = '150px';
+        userInfo.style.top = '50%';
+        userInfo.style.transform = 'translateY(-50%)';
+        userInfo.innerHTML = `
+            <span id="profile-btn" class="nav-link" style="cursor: pointer; padding: 10px 15px; font-size: 14px;">
+                ${this.currentUser.fullName} (${this.currentUser.role})
+            </span>
+        `;
+        nav.appendChild(userInfo);
+
+        // Profile click opens bookings modal
+        const profileBtn = document.getElementById('profile-btn');
+        if (profileBtn) {
+            profileBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.debug('profile-btn clicked');
+                this.showProfileBookings();
+            });
+        } else {
+            console.debug('profile-btn not found after append');
+        }
+
+        const logoutBtn = document.createElement('li');
+        logoutBtn.id = 'logout-btn-item';
+        logoutBtn.style.position = 'absolute';
+        logoutBtn.style.right = '5%';
+        logoutBtn.style.top = '50%';
+        logoutBtn.style.transform = 'translateY(-50%)';
+        logoutBtn.innerHTML = `
+            <a href="#" class="nav-link" id="logout-btn" style="font-size: 14px; padding: 10px 15px;">Logout</a>
+        `;
+        nav.appendChild(logoutBtn);
+
+        document.getElementById('logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.logout();
+        });
+    }
+
+    async showProfileBookings() {
+        console.debug('showProfileBookings: starting');
+        // Ensure modal exists
+        await this._ensureProfileModal();
+        const overlay = document.getElementById('profile-modal-overlay');
+        const list = document.getElementById('profile-bookings-list');
+        const title = document.getElementById('profile-modal-title');
+
+        title.textContent = 'My Bookings';
+        list.innerHTML = '<p>Loading...</p>';
+        overlay.style.display = 'flex';
+
+        try {
+            const response = await fetch('../BackEnd/booking.php', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'getAppointments' })
+            });
+
+            const result = await response.json();
+            console.debug('showProfileBookings: fetch result', result);
+
+            if (!result.success) {
+                list.innerHTML = `<p>${result.message || 'Failed to load bookings'}</p>`;
+                return;
             }
+
+            const appointments = result.appointments || [];
+            if (appointments.length === 0) {
+                list.innerHTML = '<p>No bookings found.</p>';
+                return;
+            }
+
+            list.innerHTML = appointments.map(appt => {
+                // parse barber from notes if present
+                let barber = 'Not set';
+                if (appt.notes) {
+                    const m = appt.notes.match(/Barber:\s*([^,]+)/i);
+                    if (m) barber = m[1].trim();
+                }
+                const service = appt.service_type || (appt.service && appt.service.name) || 'Unknown';
+                const date = appt.appointment_date || appt.date || '';
+                const time = (appt.appointment_time || appt.time || '').substring(0,5);
+                const status = appt.status || 'unknown';
+
+                return `
+                    <div class="booking-item">
+                        <div class="booking-main"><strong>${date} ${time}</strong> — ${service}</div>
+                        <div class="booking-meta">Barber: ${barber} • Status: ${status}</div>
+                    </div>
+                `;
+            }).join('');
+        } catch (err) {
+            console.error('Error fetching bookings:', err);
+            list.innerHTML = '<p>Failed to load bookings.</p>';
+        }
+    }
+
+    async _ensureProfileModal() {
+        if (document.getElementById('profile-modal-overlay')) return;
+
+        const overlay = document.createElement('div');
+        overlay.id = 'profile-modal-overlay';
+        overlay.className = 'modal-overlay';
+        overlay.style.display = 'none';
+        overlay.innerHTML = `
+            <div class="modal profile-modal">
+                <button id="profile-modal-close" class="modal-close">&times;</button>
+                <h3 id="profile-modal-title">My Bookings</h3>
+                <div id="profile-bookings-list" class="booking-list"></div>
+            </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) overlay.style.display = 'none';
+        });
+
+        const closeBtn = document.getElementById('profile-modal-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => { overlay.style.display = 'none'; });
         }
     }
 
