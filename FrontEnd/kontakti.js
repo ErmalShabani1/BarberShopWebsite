@@ -243,57 +243,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Handle Register Form
-    const registerForm = document.getElementById('register-form');
-    if (registerForm) {
-        registerForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('register-username').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            const confirmPassword = document.getElementById('register-confirm-password').value;
-            
-            const errorMsg = document.getElementById('register-error-message');
-            const successMsg = document.getElementById('register-success-message');
-            
-            // Clear previous messages
-            errorMsg.textContent = '';
-            errorMsg.style.display = 'none';
-            successMsg.textContent = '';
-            successMsg.style.display = 'none';
-            
-            // Validate passwords match
-            if (password !== confirmPassword) {
-                errorMsg.textContent = 'Passwords do not match!';
-                errorMsg.style.display = 'block';
-                return;
-            }
-            
-            // Validate password length
-            if (password.length < 6) {
-                errorMsg.textContent = 'Password must be at least 6 characters!';
-                errorMsg.style.display = 'block';
-                return;
-            }
-            
-            // Use auth system to register
-            const result = await auth.register(username, email, password, username);
-            
-            if (result.success) {
-                successMsg.textContent = 'Registration successful! Please login.';
-                successMsg.style.display = 'block';
-                
-                setTimeout(() => {
-                    showLoginForm();
-                    registerForm.reset();
-                }, 2000);
-            } else {
-                errorMsg.textContent = result.message;
-                errorMsg.style.display = 'block';
-            }
-        });
-    }
+    // Registration is handled centrally in `login.js` to avoid duplicate submissions
 });
 
 // Load barbers into dropdown

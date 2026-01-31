@@ -410,25 +410,50 @@ document.addEventListener('DOMContentLoaded', () => {
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            // Respect native HTML5 validation: if form is invalid, show browser messages and do not proceed
+            if (!registerForm.checkValidity()) {
+                registerForm.reportValidity();
+                return;
+            }
             
-            const username = document.getElementById('register-username').value;
-            const email = document.getElementById('register-email').value;
+            const username = (document.getElementById('register-username').value || '').trim();
+            const email = (document.getElementById('register-email').value || '').trim();
             const fullName = username; // keep original behavior: use username as fullName
-            const phone = document.getElementById('register-phone').value;
-            const password = document.getElementById('register-password').value;
-            const confirmPassword = document.getElementById('register-confirm-password').value;
+            const phone = (document.getElementById('register-phone').value || '').trim();
+            const password = (document.getElementById('register-password').value || '').trim();
+            const confirmPassword = (document.getElementById('register-confirm-password').value || '').trim();
             const errorMsg = document.getElementById('register-error-message');
             const successMsg = document.getElementById('register-success-message');
             
+            // Basic validation: all fields present
+            if (!username || !email || !password || !confirmPassword || !phone) {
+                errorMsg.textContent = 'Please complete the registration form';
+                errorMsg.style.display = 'block';
+                successMsg.style.display = 'none';
+                return;
+            }
+
             if (password !== confirmPassword) {
                 errorMsg.textContent = 'Passwords do not match';
                 errorMsg.style.display = 'block';
                 successMsg.style.display = 'none';
                 return;
             }
-            
-            if (!phone) {
-                errorMsg.textContent = 'Phone number is required';
+
+            // Basic email format check
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                errorMsg.textContent = 'Please enter a valid email address';
+                errorMsg.style.display = 'block';
+                successMsg.style.display = 'none';
+                return;
+            }
+
+            // Phone must contain at least 9 digits
+            const phoneDigits = phone.replace(/\D/g, '');
+            if (phoneDigits.length < 9) {
+                errorMsg.textContent = 'Phone number must contain at least 9 digits';
                 errorMsg.style.display = 'block';
                 successMsg.style.display = 'none';
                 return;
@@ -452,6 +477,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 errorMsg.style.display = 'block';
                 successMsg.style.display = 'none';
             }
+        });
+        // Hide any persistent success messages when user starts interacting with the form
+        const regError = document.getElementById('register-error-message');
+        const regSuccess = document.getElementById('register-success-message');
+        const regInputs = registerForm.querySelectorAll('input');
+        regInputs.forEach(inp => {
+            inp.addEventListener('input', () => {
+                if (regError) regError.style.display = 'none';
+                if (regSuccess) regSuccess.style.display = 'none';
+            });
         });
     }
 });

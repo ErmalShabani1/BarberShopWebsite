@@ -31,6 +31,24 @@ class User {
         }
         $stmt->close();
 
+        // Check if phone exists (must be unique)
+        if ($phone !== null && $phone !== '') {
+            // normalize phone to digits only and validate length
+            $phoneDigits = preg_replace('/\D+/', '', $phone);
+            if (strlen($phoneDigits) < 9) {
+                return ["success" => false, "message" => "Phone number must be at least 9 digits"];
+            }
+
+            $stmt = $this->conn->prepare("SELECT id FROM users WHERE phone = ?");
+            $stmt->bind_param("s", $phone);
+            $stmt->execute();
+            if ($stmt->get_result()->num_rows > 0) {
+                $stmt->close();
+                return ["success" => false, "message" => "Phone number already exists"];
+            }
+            $stmt->close();
+        }
+
         // Insert new user (no password hashing)
         $stmt = $this->conn->prepare("INSERT INTO users (username, email, password, full_name, phone) VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("sssss", $username, $email, $password, $fullName, $phone);
