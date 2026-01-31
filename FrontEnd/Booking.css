@@ -14,6 +14,68 @@ body {
 }
 
 /* Pjesa Menys Kryesore */
+.nav-menu.mobile-active {
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100vh;
+    background: #ffffff;
+    box-shadow: none;
+    max-width: 100%;
+    padding: 70px 0 20px 0;
+    z-index: 999;
+    overflow-y: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-menu.mobile-active ul, .nav-menu.mobile-active ol { width: 100%; }
+
+.nav-menu.mobile-active li {
+    width: 100%;
+    text-align: center;
+    position: static;
+    transform: none;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.nav-menu.mobile-active li:last-child {
+    border-bottom: none;
+}
+
+.nav-menu.mobile-active .nav-link {
+    padding: 22px 25px;
+    height: auto;
+    color: #333;
+    font-size: 20px;
+    font-weight: 600;
+    border-bottom: none;
+    text-align: center;
+}
+
+.nav-menu.mobile-active .nav-link:hover,
+.nav-menu.mobile-active .nav-link.active {
+    background: linear-gradient(135deg, #d4af37 0%, #f6e05e 100%);
+    color: #1a1a1a;
+}
+
+.nav-menu.mobile-active .auth-btn {
+    background: linear-gradient(135deg, #d4af37 0%, #f6e05e 100%);
+    color: #1a1a1a;
+    margin: 20px 25px;
+    width: calc(100% - 50px);
+    height: 52px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 6px;
+    text-align: center;
+}
+/* Header Styles */
 .main-header {
     background: linear-gradient(135deg, #1a1a1a 0%, #434343 100%);
     padding: 2% 0;
@@ -88,12 +150,14 @@ body {
 
 /* Pjesa Navigimit Kryesor */
 .main-nav {
-    background-color: #fff;
-    box-shadow: 0 0.2% 0.5% rgba(0,0,0,0.1);
+    background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+    box-shadow: 0 0.3% 1.5% rgba(0,0,0,0.15);
     position: sticky;
     top: 0;
     z-index: 100;
-    position: relative;
+    height: 58px;
+    min-height: 58px;
+    max-height: 58px;
 }
 
 .nav-menu {
@@ -103,31 +167,29 @@ body {
     max-width: 90%;
     margin: 0 auto;
     padding: 0;
-    gap: 0;
+    align-items: center;
+    height: 58px;
 }
 
 .nav-menu li {
     margin: 0;
-}
-
-.nav-menu li:last-child {
-    position: absolute;
-    right: 5%;
-    top: 50%;
-    transform: translateY(-50%);
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .nav-link {
-    display: block;
-    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    padding: 0 25px;
     color: #333;
     text-decoration: none;
     font-weight: 600;
     transition: all 0.4s ease;
-    border-bottom: 3px solid transparent;
     position: relative;
     overflow: hidden;
     font-size: 16px;
+    height: 58px;
 }
 
 .nav-link::before {
@@ -149,9 +211,102 @@ body {
 .nav-link.active {
     background: linear-gradient(135deg, #d4af37 0%, #f6e05e 100%);
     color: #1a1a1a;
-    border-bottom-color: #b8941f;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4);
+}
+
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 101;
+    background: none;
+    border: none;
+    padding: 10px;
+}
+
+.hamburger-menu span {
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    margin: 5px 0;
+    transition: all 0.3s ease;
+    display: block;
+}
+
+.hamburger-menu.active span:nth-child(1) {
+    transform: rotate(45deg) translate(10px, 10px);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Mobile Navigation */
+.nav-menu.mobile-active {
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100vh;
+    background: #ffffff;
+    box-shadow: none;
+    max-width: 100%;
+    padding: 70px 0 20px 0;
+    z-index: 999;
+    overflow-y: auto;
+}
+
+.nav-menu.mobile-active li {
+    width: 100%;
+    text-align: left;
+    position: static;
+    transform: none;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.nav-menu.mobile-active li:last-child {
+    border-bottom: none;
+}
+
+.nav-menu.mobile-active .nav-link {
+    padding: 18px 25px;
+    height: auto;
+    color: #333;
+    font-size: 17px;
+    font-weight: 500;
+    border-bottom: none;
+}
+
+.nav-menu.mobile-active .nav-link:hover,
+.nav-menu.mobile-active .nav-link.active {
+    background: #f8f8f8;
+    color: #d4af37;
+}
+
+.nav-menu.mobile-active .auth-btn {
+    background: #d4af37;
+    color: #ffffff;
+    margin: 20px 25px;
+    width: calc(100% - 50px);
+    height: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.nav-menu.mobile-active .nav-link.active {
+    border-left-color: #d4af37;
 }
 
 /* Footeri faqes */
@@ -785,16 +940,18 @@ body {
     cursor: pointer;
     color: #1a1a1a;
     font-weight: 600;
-    padding: 8px 15px;
+    padding: 0 20px;
     border-radius: 5px;
     transition: all 0.3s ease;
     font-size: 14px;
-    margin: 8px;
+    margin-left: 30px;
+    height: 36px;
+    display: flex;
+    align-items: center;
 }
 
 .auth-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4);
+    background: linear-gradient(135deg, #f6e05e 0%, #d4af37 100%);
 }
 
 .modal-error-message,
@@ -814,6 +971,29 @@ body {
 
 /* Responsiv dizajn */
 @media (max-width: 768px) {
+    /* show hamburger and hide desktop nav on small screens */
+    .hamburger-menu {
+        display: flex;
+    }
+
+    .nav-menu {
+        display: none;
+    }
+
+    .nav-menu.mobile-active {
+        display: flex;
+    }
+
+    .brand-title {
+        font-size: 1.8em;
+        letter-spacing: 1px;
+    }
+
+    .logo {
+        min-width: 50px;
+        max-width: 60px;
+    }
+
     .barber-card {
         min-width: 80%;
     }
@@ -821,15 +1001,33 @@ body {
     .service-grid,
     .time-slots {
         grid-template-columns: 1fr;
+        gap: 15px;
     }
 
     .datetime-grid {
         grid-template-columns: 1fr;
     }
 
+    .booking-container {
+        padding: 20px 15px;
+    }
+
+    .booking-title {
+        font-size: 1.8em;
+    }
+
+    .step-title {
+        font-size: 1.3em;
+    }
+
+    .booking-summary {
+        padding: 15px;
+    }
+
     #user-info {
         right: 20px !important;
     }
+    
     #logout-btn-item {
         right: 6% !important;
     }

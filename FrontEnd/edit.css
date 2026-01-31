@@ -88,11 +88,14 @@ body {
 
 /* Navigation Styles */
 .main-nav {
-    background-color: #fff;
-    box-shadow: 0 0.2% 0.5% rgba(0,0,0,0.1);
+    background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+    box-shadow: 0 0.3% 1.5% rgba(0,0,0,0.15);
     position: sticky;
     top: 0;
     z-index: 100;
+    height: 58px;
+    min-height: 58px;
+    max-height: 58px;
 }
 
 .nav-menu {
@@ -102,23 +105,29 @@ body {
     max-width: 90%;
     margin: 0 auto;
     padding: 0;
+    align-items: center;
+    height: 58px;
 }
 
 .nav-menu li {
     margin: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .nav-link {
-    display: block;
-    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    padding: 0 25px;
     color: #333;
     text-decoration: none;
     font-weight: 600;
     transition: all 0.4s ease;
-    border-bottom: 3px solid transparent;
     position: relative;
     overflow: hidden;
     font-size: 16px;
+    height: 58px;
 }
 
 .nav-link::before {
@@ -140,9 +149,72 @@ body {
 .nav-link.active {
     background: linear-gradient(135deg, #d4af37 0%, #f6e05e 100%);
     color: #1a1a1a;
-    border-bottom-color: #b8941f;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4);
+}
+
+/* Hamburger Menu */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 101;
+    background: none;
+    border: none;
+    padding: 10px;
+}
+
+.hamburger-menu span {
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    margin: 5px 0;
+    transition: all 0.3s ease;
+    display: block;
+}
+
+.hamburger-menu.active span:nth-child(1) {
+    transform: rotate(45deg) translate(10px, 10px);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Mobile Navigation */
+.nav-menu.mobile-active {
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: #ffffff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-width: 100%;
+    padding: 10px 0;
+}
+
+.nav-menu.mobile-active li {
+    width: 100%;
+    text-align: center;
+}
+
+.nav-menu.mobile-active .nav-link {
+    border-bottom: none;
+    border-left: 3px solid transparent;
+    padding: 12px 15px;
+}
+
+.nav-menu.mobile-active .nav-link.active {
+    border-left-color: #d4af37;
+    border-bottom: none;
 }
 
 /* Footer */
@@ -773,7 +845,67 @@ body {
     100% { transform: rotate(360deg); }
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
+    .brand-title {
+        font-size: 1.8em;
+        letter-spacing: 1px;
+    }
+
+    .logo {
+        min-width: 50px;
+        max-width: 60px;
+    }
+
+    .edit-title {
+        font-size: 1.8em;
+    }
+
+    .main-nav {
+        position: sticky;
+        top: 0;
+    }
+
+    .hamburger-menu {
+        display: flex;
+    }
+
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        width: 100%;
+        background: #ffffff;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .nav-menu.mobile-active {
+        display: flex;
+    }
+
+    .nav-menu li {
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-link {
+        padding: 12px 15px;
+        font-size: 14px;
+        border-bottom: none;
+        border-left: 3px solid transparent;
+    }
+
+    .nav-link.active,
+    .nav-link:hover {
+        border-left-color: #d4af37;
+        border-bottom: none;
+    }
+
     .service-item {
         flex-direction: column;
         align-items: flex-start;
@@ -788,13 +920,12 @@ body {
     .btn-edit, .btn-delete {
         flex: 1;
     }
-}
 
-/* Responsive Design */
-@media (max-width: 768px) {
     .bookings-table,
     .users-table {
         font-size: 0.85rem;
+        overflow-x: auto;
+        display: block;
     }
 
     .bookings-table th,
@@ -802,6 +933,7 @@ body {
     .users-table th,
     .users-table td {
         padding: 0.5rem;
+        min-width: 100px;
     }
 
     .action-btn {
@@ -817,9 +949,19 @@ body {
         flex-direction: column;
     }
 
+    .role-tab {
+        width: 100%;
+        text-align: center;
+    }
+
+    .edit-container {
+        padding: 20px 15px;
+    }
+
     #user-info {
         right: 20px !important;
     }
+    
     #logout-btn-item {
         right: 6% !important;
     }

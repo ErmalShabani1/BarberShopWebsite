@@ -29,20 +29,20 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Get form data
 $barber_id = isset($_POST['barber_id']) ? intval($_POST['barber_id']) : 0;
-$subject = isset($_POST['subject']) ? trim($_POST['subject']) : '';
-$message = isset($_POST['message']) ? trim($_POST['message']) : '';
+$rating = isset($_POST['rating']) ? intval($_POST['rating']) : 0;
 
 // Validate input
-if ($barber_id <= 0 || empty($subject) || empty($message)) {
+if ($barber_id <= 0 || $rating < 1 || $rating > 5) {
     http_response_code(400);
-    echo 'incomplete_data';
+    echo 'invalid_data';
     exit();
 }
 
-// Verify barber exists and has barber role
+// Database connection
 $db = new Database();
 $conn = $db->connect();
 
+// Verify barber exists and has barber role
 $stmt = $conn->prepare("SELECT id FROM users WHERE id = ? AND role = 'barber'");
 $stmt->bind_param("i", $barber_id);
 $stmt->execute();
@@ -54,12 +54,21 @@ if ($stmt->get_result()->num_rows === 0) {
 }
 $stmt->close();
 
-// Prepare and execute query - include user's name and email from session
+// Check if user has already rated this barber
 $user_id = $currentUser['id'];
-$name = $currentUser['fullName'] ?? $currentUser['username'];
-$email = $currentUser['email'] ?? '';
+$stmt = $conn->prepare("SELECT id FROM rating WHERE user_id = ? AND barber_id = ?");
+$stmt->bind_param("ii", $user_id, $barber_id);
+$stmt->execute();
+if ($stmt->get_result()->num_rows > 0) {
+    $stmt->close();
+    $db->close();
+    echo 'already_rated';
+    exit();
+}
+$stmt->close();
 
-$stmt = $conn->prepare("INSERT INTO messages (user_id, barber_id, name, email, subject, message, status) VALUES (?, ?, ?, ?, ?, ?, 'unread')");
+// Insert rating
+$stmt = $conn->prepare("INSERT INTO rating (user_id, barber_id, rating) VALUES (?, ?, ?)");
 
 if (!$stmt) {
     http_response_code(500);
@@ -67,7 +76,7 @@ if (!$stmt) {
     exit();
 }
 
-$stmt->bind_param("iissss", $user_id, $barber_id, $name, $email, $subject, $message);
+$stmt->bind_param("iii", $user_id, $barber_id, $rating);
 
 if ($stmt->execute()) {
     $stmt->close();

@@ -1,45 +1,119 @@
+// Mobile menu toggle
+function toggleMobileMenu() {
+    const hamburger = document.getElementById('hamburger-btn');
+    const navMenu = document.getElementById('nav-menu');
+    hamburger.classList.toggle('active');
+    navMenu.classList.toggle('mobile-active');
+}
+
+console.log('kontakti.js: FILE LOADED');
+
 function handleContactForm(event) {
     event.preventDefault();
 
-    // Check if user is logged in before sending
+    // Check if user is logged in
     if (typeof auth !== 'undefined' && !auth.isLoggedIn()) {
-        alert('Please login to send a message.');
+        alert('Please login to send a message or rate a barber.');
         openLoginModal();
         return;
     }
 
     const formData = new FormData(event.target);
+    const message = formData.get('message');
+    const subject = formData.get('subject');
+    const rating = formData.get('rating');
+    const barberId = formData.get('barber_id');
 
-    fetch('../BackEnd/send_message.php', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include'
-    })
-    .then(res => {
-        if (res.status === 401) {
-            alert('Please login to send a message.');
-            openLoginModal();
-            return null;
-        }
-        if (!res.ok) {
-            throw new Error('Failed to send message (Status: ' + res.status + ')');
-        }
-        return res.text();
-    })
-    .then(data => {
-        if (!data) return;
-        if (data === 'success') {
-            alert('Thank you for your message! We will get back to you soon.');
-            event.target.reset();
-        } else {
-            console.error('Error response:', data);
-            alert('Error: ' + data);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Failed to send message. Please try again.');
-    });
+    // Check if at least message or rating is provided
+    const hasMessage = message && message.trim() !== '';
+    const hasRating = rating !== null && rating !== '';
+
+    if (!hasMessage && !hasRating) {
+        alert('Please provide either a message or a rating');
+        return;
+    }
+
+    if (!barberId) {
+        alert('Please select a barber');
+        return;
+    }
+
+    const promises = [];
+    const actions = [];
+
+    // Send message if provided
+    if (hasMessage) {
+        const messageData = new FormData();
+        messageData.append('barber_id', barberId);
+        messageData.append('subject', subject || 'No subject');
+        messageData.append('message', message);
+        
+        promises.push(
+            fetch('../BackEnd/send_message.php', {
+                method: 'POST',
+                body: messageData,
+                credentials: 'include'
+            })
+            .then(res => res.text())
+            .then(data => ({ type: 'message', data }))
+        );
+        actions.push('message');
+    }
+
+    // Send rating if provided
+    if (hasRating) {
+        const ratingData = new FormData();
+        ratingData.append('barber_id', barberId);
+        ratingData.append('rating', rating);
+        
+        promises.push(
+            fetch('../BackEnd/submit_rating.php', {
+                method: 'POST',
+                body: ratingData,
+                credentials: 'include'
+            })
+            .then(res => res.text())
+            .then(data => ({ type: 'rating', data }))
+        );
+        actions.push('rating');
+    }
+
+    Promise.all(promises)
+        .then(results => {
+            const messages = [];
+            let hasError = false;
+
+            results.forEach(result => {
+                if (result.type === 'message') {
+                    if (result.data === 'success') {
+                        messages.push('Message sent successfully!');
+                    } else {
+                        messages.push('Error sending message: ' + result.data);
+                        hasError = true;
+                    }
+                } else if (result.type === 'rating') {
+                    if (result.data === 'success') {
+                        messages.push('Rating submitted successfully!');
+                    } else if (result.data === 'already_rated') {
+                        messages.push('You have already rated this barber.');
+                        hasError = true;
+                    } else {
+                        messages.push('Error submitting rating: ' + result.data);
+                        hasError = true;
+                    }
+                }
+            });
+
+            alert(messages.join('\n'));
+            
+            if (!hasError) {
+                event.target.reset();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to submit. Please try again.');
+        });
 }
 
 // Modal Functions
@@ -65,9 +139,17 @@ function showRegisterForm() {
 
 // Handle Register Form
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded: kontakti.js loaded');
+    
+    // Load barbers into dropdowns immediately
+    console.log('DOMContentLoaded: calling loadBarbers()');
+    loadBarbers();
+    
     // Check if user is logged in and disable form if not
     const contactForm = document.querySelector('.contact-form');
-    const submitBtn = contactForm ? contactForm.querySelector('.submit-btn') : null;
+    const contactSubmitBtn = contactForm ? contactForm.querySelector('.submit-btn') : null;
+    
+    console.log('DOMContentLoaded: contactForm', contactForm);
     
     function checkLoginStatus() {
         // Wait for auth to be defined and check session
@@ -76,31 +158,29 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        if (!contactForm) return;
-        
-        if (!auth.isLoggedIn()) {
-            // Disable form inputs
-            const inputs = contactForm.querySelectorAll('input, textarea');
-            inputs.forEach(input => {
-                input.disabled = true;
-                input.placeholder = 'Please login to use contact form';
-            });
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Login Required';
-                submitBtn.style.cursor = 'not-allowed';
-            }
-        } else {
-            // Enable form inputs
-            const inputs = contactForm.querySelectorAll('input, textarea');
-            inputs.forEach(input => {
-                input.disabled = false;
-                input.placeholder = '';
-            });
-            if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Send Message';
-                submitBtn.style.cursor = 'pointer';
+        // Handle contact form
+        if (contactForm) {
+            if (!auth.isLoggedIn()) {
+                const inputs = contactForm.querySelectorAll('input, textarea, select');
+                inputs.forEach(input => {
+                    input.disabled = true;
+                });
+                if (contactSubmitBtn) {
+                    contactSubmitBtn.disabled = true;
+                    contactSubmitBtn.textContent = 'Login Required';
+                    contactSubmitBtn.style.cursor = 'not-allowed';
+                }
+            } else {
+                const inputs = contactForm.querySelectorAll('input, textarea, select');
+                inputs.forEach(input => {
+                    input.disabled = false;
+                });
+                if (contactSubmitBtn) {
+                    contactSubmitBtn.disabled = false;
+                    contactSubmitBtn.textContent = 'Submit';
+                    contactSubmitBtn.style.cursor = 'pointer';
+                }
+                loadBarbers(); // Reload barbers after login
             }
         }
     }
@@ -209,3 +289,37 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Load barbers into dropdown
+async function loadBarbers() {
+    console.log('loadBarbers: starting...');
+    try {
+        const response = await fetch('../BackEnd/get_users.php?role=barber');
+        console.log('loadBarbers: response status', response.status);
+        const result = await response.json();
+        console.log('loadBarbers: result', result);
+        
+        if (result.success && result.barbers) {
+            const barbers = result.barbers;
+            console.log('loadBarbers: found', barbers.length, 'barbers');
+            
+            // Populate barber dropdown
+            const barberSelect = document.getElementById('barber');
+            console.log('loadBarbers: barberSelect element', barberSelect);
+            if (barberSelect) {
+                barberSelect.innerHTML = '<option value="">-- Select a Barber --</option>';
+                barbers.forEach(barber => {
+                    const option = document.createElement('option');
+                    option.value = barber.id;
+                    option.textContent = barber.fullName || barber.username;
+                    barberSelect.appendChild(option);
+                });
+                console.log('loadBarbers: populated dropdown with', barbers.length, 'barbers');
+            }
+        } else {
+            console.error('loadBarbers: no barbers in result or success=false', result);
+        }
+    } catch (error) {
+        console.error('Error loading barbers:', error);
+    }
+}

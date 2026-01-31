@@ -49,30 +49,7 @@
         <div class="barber-slider">
             <button class="slider-btn prev" onclick="slideBarbers(-1)">‹</button>
             <div class="barber-track" id="barber-track">
-                <div class="barber-card">
-                    <img src="../images/image1.jpg" alt="John Smith">
-                    <h3>John Smith</h3>
-                    <p>Expert in Fades & Classic Cuts</p>
-                    <p>⭐ 4.9 (150 reviews)</p>
-                </div>
-                <div class="barber-card">
-                    <img src="../images/image1.jpg" alt="Mike Johnson">
-                    <h3>Mike Johnson</h3>
-                    <p>Specialist in Modern Styles</p>
-                    <p>⭐ 4.8 (120 reviews)</p>
-                </div>
-                <div class="barber-card">
-                    <img src="../images/image1.jpg" alt="David Brown">
-                    <h3>David Brown</h3>
-                    <p>Master of Beard Grooming</p>
-                    <p>⭐ 4.9 (180 reviews)</p>
-                </div>
-                <div class="barber-card">
-                    <img src="../images/image1.jpg" alt="Chris Wilson">
-                    <h3>Chris Wilson</h3>
-                    <p>Contemporary Hair Styling Expert</p>
-                    <p>⭐ 4.7 (95 reviews)</p>
-                </div>
+                <!-- Barbers will be loaded dynamically from database -->
             </div>
             <button class="slider-btn next" onclick="slideBarbers(1)">›</button>
         </div>

@@ -1,3 +1,26 @@
+// Mobile menu toggle
+function toggleMobileMenu() {
+    const hamburger = document.getElementById('hamburger-btn');
+    const navMenu = document.getElementById('nav-menu');
+    hamburger.classList.toggle('active');
+    navMenu.classList.toggle('mobile-active');
+}
+
+// Close menu when a link is clicked
+document.addEventListener('DOMContentLoaded', () => {
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            const hamburger = document.getElementById('hamburger-btn');
+            const navMenu = document.getElementById('nav-menu');
+            if (hamburger && navMenu) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('mobile-active');
+            }
+        });
+    });
+});
+
 // Edit/Manage Bookings System
 class EditBookingSystem {
     constructor() {

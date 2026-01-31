@@ -250,7 +250,18 @@ class AuthSystem {
                 return;
             }
 
-            list.innerHTML = appointments.map(appt => {
+            // Filter out completed appointments
+            const activeAppointments = appointments.filter(appt => {
+                const status = (appt.status || '').toLowerCase();
+                return status !== 'completed';
+            });
+
+            if (activeAppointments.length === 0) {
+                list.innerHTML = '<p>No active bookings found.</p>';
+                return;
+            }
+
+            list.innerHTML = activeAppointments.map(appt => {
                 const barber = appt.barber_name || 'Not set';
                 const service = appt.service_type || (appt.service && appt.service.name) || 'Unknown';
                 const date = appt.appointment_date || appt.date || '';
