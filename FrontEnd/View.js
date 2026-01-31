@@ -51,6 +51,16 @@ async function loadBarbers() {
                 `;
                 track.appendChild(barberCard);
             });
+            // reset slider position after loading
+            currentSlide = 0;
+            track.style.transform = 'translateX(0px)';
+            track.style.willChange = 'transform';
+            // start auto-slide if desired (ensure only one interval)
+            if (!window._barberAutoSlideInterval) {
+                window._barberAutoSlideInterval = setInterval(() => {
+                    slideBarbers(1);
+                }, 5000);
+            }
         } else {
             const track = document.getElementById('barber-track');
             track.innerHTML = '<p style="color: white; text-align: center; width: 100%;">No barbers available at the moment.</p>';
@@ -68,13 +78,13 @@ function slideBarbers(direction) {
     
     if (cards.length === 0) return; // No cards to slide
     
-    const cardWidth = cards[0].offsetWidth;
+    const cardWidth = cards[0].getBoundingClientRect().width;
     const gap = parseFloat(getComputedStyle(track).gap) || 0;
     const totalCards = cards.length;
     
     // Calculate how many cards are visible
-    const containerWidth = track.parentElement.offsetWidth;
-    const visibleCards = Math.floor(containerWidth / (cardWidth + gap));
+    const containerWidth = track.parentElement.getBoundingClientRect().width;
+    const visibleCards = Math.max(1, Math.floor(containerWidth / (cardWidth + gap)));
     const maxSlide = totalCards - visibleCards;
     
     currentSlide += direction;
@@ -87,8 +97,19 @@ function slideBarbers(direction) {
     }
     
     const offset = currentSlide * (cardWidth + gap);
+    track.style.transition = 'transform 400ms ease';
     track.style.transform = `translateX(-${offset}px)`;
 }
+
+// Recalculate slider on resize to avoid clipping issues
+window.addEventListener('resize', () => {
+    const track = document.getElementById('barber-track');
+    if (!track) return;
+    // reset to valid slide index
+    currentSlide = 0;
+    track.style.transition = 'none';
+    track.style.transform = 'translateX(0px)';
+});
 
 // Load barbers when page loads
 document.addEventListener('DOMContentLoaded', loadBarbers);

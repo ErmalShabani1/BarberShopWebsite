@@ -277,18 +277,20 @@ body {
 /* Barber Slider */
 .barber-slider {
     position: relative;
-    overflow: hidden;
+    /* allow buttons to sit outside the card bounds */
+    overflow: visible;
     padding: 2% 0;
 }
 
 .barber-track {
     display: flex;
-    gap: 2%;
+    gap: 3%;
     transition: transform 0.5s ease;
 }
 
 .barber-card {
-    min-width: 25%;
+    min-width: 40%;
+    max-width: 48%;
     background: linear-gradient(135deg, #fff, #f9f9f9);
     border-radius: 15px;
     padding: 1.5%;
@@ -305,10 +307,10 @@ body {
 }
 
 .barber-card img {
-    width: 120px;
-    height: 120px;
+    width: 140px;
+    height: 140px;
     border-radius: 50%;
-    margin: 0 auto 10px;
+    margin: 0 auto 12px;
     object-fit: cover;
     border: 3px solid #d4af37;
     box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
@@ -404,8 +406,8 @@ body {
     box-shadow: 0 6px 15px rgba(212, 175, 55, 0.6);
 }
 
-.slider-btn.prev { left: 0; }
-.slider-btn.next { right: 0; }
+.slider-btn.prev { left: -80px; z-index: 40; }
+.slider-btn.next { right: -80px; z-index: 40; }
 
 /* Footer */
 .main-footer {
@@ -449,6 +451,10 @@ body {
     .barber-card {
         min-width: 85%;
     }
+
+    /* keep slider buttons inside viewport on small screens */
+    .slider-btn.prev { left: 10px; }
+    .slider-btn.next { right: 10px; }
 
     .barber-view-container {
         padding: 20px 15px;

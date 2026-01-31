@@ -67,15 +67,8 @@
 					<div class="modal-success-message" id="modal-success-message"></div>
 				</form>
 				<p class="toggle-form">Don't have an account? <a href="#" onclick="showRegisterForm(); return false;">Register</a></p>
-				
-				<!-- Demo Credentials -->
-				<div class="demo-credentials">
-					<h4>Demo Logins:</h4>
-					<p><strong>Admin:</strong> admin / admin123</p>
-					<p><strong>Barber:</strong> barber / barber123</p>
-					<p><strong>User:</strong> user / user123</p>
-				</div>
 			</div>
+			
 
 			<!-- Register Form -->
 			<div id="register-form-container" class="auth-form-container" style="display: none;">

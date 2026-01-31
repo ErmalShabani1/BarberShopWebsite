@@ -82,18 +82,20 @@ function handleContactForm(event) {
         .then(results => {
             const messages = [];
             let hasError = false;
+            let sentMessage = false;
+            let sentRating = false;
 
             results.forEach(result => {
                 if (result.type === 'message') {
                     if (result.data === 'success') {
-                        messages.push('Message sent successfully!');
+                        sentMessage = true;
                     } else {
                         messages.push('Error sending message: ' + result.data);
                         hasError = true;
                     }
                 } else if (result.type === 'rating') {
                     if (result.data === 'success') {
-                        messages.push('Rating submitted successfully!');
+                        sentRating = true;
                     } else if (result.data === 'already_rated') {
                         messages.push('You have already rated this barber.');
                         hasError = true;
@@ -104,8 +106,12 @@ function handleContactForm(event) {
                 }
             });
 
+            // Build user-friendly success messages
+            if (sentRating) messages.push('Thank you !');
+            if (sentMessage) messages.push('We will get back to you shortly');
+
             alert(messages.join('\n'));
-            
+
             if (!hasError) {
                 event.target.reset();
             }
