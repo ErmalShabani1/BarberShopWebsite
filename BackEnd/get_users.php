@@ -22,11 +22,20 @@ if (isset($_GET['role']) && $_GET['role'] === 'barber') {
     }
     $q->close();
 
-    $select = 'id, username, email, full_name, created_at';
-    if ($hasDesc) $select .= ', description';
-    if ($hasImage) $select .= ', image_url';
+    $select = 'u.id, u.username, u.email, u.full_name, u.created_at';
+    if ($hasDesc) $select .= ', u.description';
+    if ($hasImage) $select .= ', u.image_url';
 
-    $stmt = $conn->prepare("SELECT {$select} FROM users WHERE role = 'barber' ORDER BY created_at DESC");
+    // Include average rating and rating count per barber using a left-join subquery
+    $stmt = $conn->prepare("SELECT {$select}, IFNULL(r.avgRating, 0) AS avgRating, IFNULL(r.ratingCount, 0) AS ratingCount
+        FROM users u
+        LEFT JOIN (
+            SELECT barber_id, AVG(rating) AS avgRating, COUNT(*) AS ratingCount
+            FROM rating
+            GROUP BY barber_id
+        ) r ON u.id = r.barber_id
+        WHERE u.role = 'barber'
+        ORDER BY u.created_at DESC");
     $stmt->execute();
     $result = $stmt->get_result();
     
@@ -41,6 +50,11 @@ if (isset($_GET['role']) && $_GET['role'] === 'barber') {
         ];
         if ($hasDesc) $b['description'] = $row['description'];
         if ($hasImage) $b['imageUrl'] = $row['image_url'];
+
+        // round avgRating to one decimal and ensure count is an integer
+        $b['avgRating'] = isset($row['avgRating']) ? round(floatval($row['avgRating']), 1) : 0.0;
+        $b['ratingCount'] = isset($row['ratingCount']) ? intval($row['ratingCount']) : 0;
+
         $barbers[] = $b;
     }
     

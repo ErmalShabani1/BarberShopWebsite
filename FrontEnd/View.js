@@ -35,9 +35,17 @@ async function loadBarbers() {
                 barberCard.className = 'barber-card';
                 const imgSrc = barber.imageUrl ? barber.imageUrl : '../images/image1.jpg';
                 const desc = barber.description ? barber.description : 'Professional Barber';
+                const avg = barber.avgRating ? parseFloat(barber.avgRating) : 0.0;
+                const ratingCount = barber.ratingCount ? parseInt(barber.ratingCount, 10) : 0;
+                const percent = (avg / 5) * 100;
                 barberCard.innerHTML = `
                     <img src="${imgSrc}" alt="${barber.fullName || barber.username}">
                     <h3>${barber.fullName || barber.username}</h3>
+                    <div class="rating">
+                        <div class="stars-outer"><div class="stars-inner" style="width: ${percent}%"></div></div>
+                        <span class="rating-value">${ratingCount === 0 ? 'New' : avg.toFixed(1)}</span>
+                        <span class="rating-count">(${ratingCount})</span>
+                    </div>
                     <p>${desc}</p>
                     <p>Email: ${barber.email}</p>
                 `;

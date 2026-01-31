@@ -327,6 +327,57 @@ body {
     margin-bottom: 5px;
 }
 
+/* Rating display */
+.rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.stars-outer {
+    position: relative;
+    display: inline-block;
+    color: #ccc;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.stars-outer::before {
+    content: '★★★★★';
+    letter-spacing: 2px;
+}
+
+.stars-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    color: #f8ce0b; /* gold */
+}
+
+.stars-inner::before {
+    content: '★★★★★';
+    letter-spacing: 2px;
+}
+
+.rating-value {
+    font-weight: 700;
+    color: #1a1a1a;
+    font-size: 0.95rem;
+}
+
+.rating-count {
+    color: grey;
+    font-size: 0.85rem;
+}
+
+@media (max-width: 768px) {
+    .stars-outer, .stars-inner::before { font-size: 1.05rem; }
+}
+
 /* Slider Buttons */
 .slider-btn {
     position: absolute;
