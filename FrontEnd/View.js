@@ -78,26 +78,30 @@ function slideBarbers(direction) {
     
     if (cards.length === 0) return; // No cards to slide
     
-    const cardWidth = cards[0].getBoundingClientRect().width;
-    const gap = parseFloat(getComputedStyle(track).gap) || 0;
+    const trackRect = track.getBoundingClientRect();
+    const cardRect = cards[0].getBoundingClientRect();
+    const cardWidth = cardRect.width;
+    const gapStyle = getComputedStyle(track).gap;
+    const gap = parseFloat(gapStyle) || 0;
     const totalCards = cards.length;
     
-    // Calculate how many cards are visible
-    const containerWidth = track.parentElement.getBoundingClientRect().width;
-    const visibleCards = Math.max(1, Math.floor(containerWidth / (cardWidth + gap)));
-    const maxSlide = totalCards - visibleCards;
+    // Calculate how many cards are visible at once
+    const isMobile = window.innerWidth <= 768;
+    const visibleCards = isMobile ? 1 : Math.max(1, Math.floor(trackRect.width / (cardWidth + gap)));
+    const maxSlide = Math.max(0, totalCards - visibleCards);
     
     currentSlide += direction;
     
     // Loop back to start/end
     if (currentSlide < 0) {
-        currentSlide = maxSlide > 0 ? maxSlide : 0;
+        currentSlide = maxSlide;
     } else if (currentSlide > maxSlide) {
         currentSlide = 0;
     }
     
+    // Calculate offset based on card width + gap
     const offset = currentSlide * (cardWidth + gap);
-    track.style.transition = 'transform 400ms ease';
+    track.style.transition = 'transform 500ms cubic-bezier(0.4, 0, 0.2, 1)';
     track.style.transform = `translateX(-${offset}px)`;
 }
 

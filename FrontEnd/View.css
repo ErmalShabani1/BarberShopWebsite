@@ -161,7 +161,7 @@ body {
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 101;
+    z-index: 1001;
     background: none;
     border: none;
     padding: 10px;
@@ -224,46 +224,38 @@ body {
 }
 
 .nav-menu.mobile-active .nav-link {
-    padding: 22px 25px;
+    padding: 18px 25px;
     height: auto;
     color: #333;
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 17px;
+    font-weight: 500;
     border-bottom: none;
-    text-align: center;
 }
 
 .nav-menu.mobile-active .nav-link:hover,
 .nav-menu.mobile-active .nav-link.active {
-    background: linear-gradient(135deg, #d4af37 0%, #f6e05e 100%);
-    color: #1a1a1a;
+    background: #f8f8f8;
+    color: #d4af37;
 }
 
 .nav-menu.mobile-active .auth-btn {
-    background: linear-gradient(135deg, #d4af37 0%, #f6e05e 100%);
-    color: #1a1a1a;
+    background: #d4af37;
+    color: #ffffff;
     margin: 20px 25px;
     width: calc(100% - 50px);
-    height: 52px;
+    height: 50px;
     font-size: 16px;
-    font-weight: 700;
-    border-radius: 6px;
+    font-weight: 600;
+    border-radius: 5px;
     text-align: center;
-}
-
-.nav-menu.mobile-active .nav-link.active {
-    border-left-color: #d4af37;
 }
 
 /* Slider Section */
 .barber-view-container {
     max-width: 90%;
     margin: 3% auto;
-}
-
-/* allow main content to grow so footer stays at bottom */
-.barber-view-container {
     flex: 1 0 auto;
+    overflow: hidden;
 }
 
 .section-title {
@@ -277,23 +269,25 @@ body {
 /* Barber Slider */
 .barber-slider {
     position: relative;
-    /* allow buttons to sit outside the card bounds */
-    overflow: visible;
+    overflow: hidden;
     padding: 2% 0;
+    margin: 0 auto;
 }
 
 .barber-track {
     display: flex;
-    gap: 3%;
+    gap: 2%;
     transition: transform 0.5s ease;
+    width: 100%;
 }
 
 .barber-card {
-    min-width: 40%;
+    min-width: 45%;
     max-width: 48%;
+    flex-shrink: 0;
     background: linear-gradient(135deg, #fff, #f9f9f9);
     border-radius: 15px;
-    padding: 1.5%;
+    padding: 20px;
     text-align: center;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     transition: all 0.3s ease;
@@ -445,19 +439,63 @@ body {
     }
 
     .section-title {
-        font-size: 1.8em;
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+
+    .barber-view-container {
+        max-width: 100%;
+        padding: 20px 10px;
+        margin: 20px auto;
+    }
+
+    .barber-slider {
+        padding: 10px 0;
+        position: relative;
+        width: 100%;
+    }
+
+    .barber-track {
+        gap: 15px;
+        padding: 0 60px;
     }
 
     .barber-card {
-        min-width: 85%;
+        min-width: calc(100% - 120px);
+        max-width: calc(100% - 120px);
+        flex-shrink: 0;
+        padding: 25px 15px;
+        margin: 0;
+    }
+
+    .barber-card img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .barber-card h3 {
+        font-size: 1.3rem;
+    }
+
+    .barber-card p {
+        font-size: 0.95rem;
     }
 
     /* keep slider buttons inside viewport on small screens */
-    .slider-btn.prev { left: 10px; }
-    .slider-btn.next { right: 10px; }
+    .slider-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
 
-    .barber-view-container {
-        padding: 20px 15px;
+    .slider-btn.prev { 
+        left: 5px;
+        z-index: 50;
+    }
+    
+    .slider-btn.next { 
+        right: 5px;
+        z-index: 50;
     }
 
     #user-info {
