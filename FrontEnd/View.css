@@ -269,9 +269,10 @@ body {
 /* Barber Slider */
 .barber-slider {
     position: relative;
-    overflow: hidden;
-    padding: 2% 0;
+    overflow: visible;
+    padding: 2% 70px;
     margin: 0 auto;
+    max-width: 100%;
 }
 
 .barber-track {
@@ -400,8 +401,8 @@ body {
     box-shadow: 0 6px 15px rgba(212, 175, 55, 0.6);
 }
 
-.slider-btn.prev { left: -80px; z-index: 40; }
-.slider-btn.next { right: -80px; z-index: 40; }
+.slider-btn.prev { left: 10px; z-index: 40; }
+.slider-btn.next { right: 10px; z-index: 40; }
 
 /* Footer */
 .main-footer {
@@ -453,11 +454,12 @@ body {
         padding: 10px 0;
         position: relative;
         width: 100%;
+        overflow: visible;
     }
 
     .barber-track {
         gap: 15px;
-        padding: 0 60px;
+        padding: 0;
     }
 
     .barber-card {
