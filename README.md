@@ -1,3 +1,3 @@
-# Dizajn-ZhvillimWeb
-Projekti ne Dizajn dhe Zhvillim i Web ( Ermal Shabani 232470545 &amp; Elion Sopa 232470265)
-Website e Kompletuar !
+# Barber Shop Website 
+Booking, Rating, Contacting and Rating implemented (Collaborated Elion Sopa )
+Website Completed !
